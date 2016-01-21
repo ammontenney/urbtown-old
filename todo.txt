@@ -1,0 +1,26 @@
+onLoad
+  ask location on first load
+    store in localstorage to remember next visit
+  populate categories in menu
+  load map
+  display ad
+
+enter location in top right corner
+wait for user to select category
+Query service for locations under category
+  use search radius
+populate results div from category
+animate results div in from left
+hover hightlights item
+user selects list item (visually indicate selection)
+map marker highlights and dances
+filter on results list
+clear filter on results list
+go back to category list
+2nd click opens maker details
+  marker stops dancing
+  div appears at marker location
+  grab 3rd party data for location
+  display 3rd party data
+click on map closes details
+selecting different list item closes details
