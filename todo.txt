@@ -24,3 +24,41 @@ go back to category list
   display 3rd party data
 click on map closes details
 selecting different list item closes details
+
+
+MODEL:
+location
+searchRadius
+selectedCategory
+selectedCategoryResults
+selectedPlace
+selectedPlace.opened = T/F
+storedCategoryResults = list of previously retrieved results
+firstVisit = T/F
+
+VIEW:
+setLocation
+setRadius
+saveLocationAndRadius
+loadLocationAndRadius
+populateCategories
+showCategories
+setSelectedCategory
+showCategoryResults
+hideCategoryResults
+setSelectedPlace
+showSelectedPlace
+hideSelectedPlace
+animateSelectedPlace(T/F)
+retrieve3rdParyData(place, service)
+displayPlaceData
+
+pinPlace
+showPins
+hidePins
+savePins
+loadPins
+
+
+
+.
