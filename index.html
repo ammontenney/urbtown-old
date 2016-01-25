@@ -41,16 +41,21 @@
                 whenever you need to go somewhere new.</p>
                 <p class="welcome-info-label">Enter a location to begin exploring:</p>
                 <div class="welcome-info-controls">
-                    <input class="welcome-info-controls-input" data-bind="value: location">
-                    <select class="welcome-info-controls-select" data-bind="value: locationRadius">
+                    <input class="welcome-info-controls-input"
+                           data-bind="value: location">
+                    <select class="welcome-info-controls-select"
+                            data-bind="value: locationRadius">
                         <option value="5">5 miles</option>
                         <option value="10">10 miles</option>
                         <option value="15">15 miles</option>
                         <option value="20">20 miles</option>
                         <option value="25">25 miles</option>
                     </select>
-                    <button class="welcome-info-controls-button">Explore!</button>
+                    <button class="welcome-info-controls-button"
+                            data-bind="click: verifyInitialLocation">
+                            Explore!</button>
                 </div>
+                <div data-bind="html: welcomeError"></div>
             </div>
         </div>
 
