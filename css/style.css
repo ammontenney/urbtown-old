@@ -55,9 +55,9 @@ img, embed, object, video {
 }
 
 /* Let's us see where our boxes are */
-* {
+/** {
     outline: 1px solid red !important;
-}
+}*/
 
 img {
   height: auto;
@@ -166,7 +166,7 @@ html, body, .container {
     width: 75%;
     max-width: 500px;
     position: absolute;
-    top: 50%;
+    top: 33%;
     left: 50%;
     transform: translate(-50%, -50%);
 }

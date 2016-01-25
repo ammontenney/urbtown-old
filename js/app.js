@@ -8,9 +8,6 @@ function AppViewModel() {
 
     t.welcomeError = ko.observable("&nbsp");
 
-    // if (t.location() === "") $('.welcome').css('visibility', 'visible');
-    // else $('.welcome').css('visibility', 'hidden');
-
     t.verifyInitialLocation = VerifyInitialLocation(t);
 
 }
@@ -27,6 +24,8 @@ function VerifyInitialLocation(t) {
             return;
         }
 
+        // TODO: geolocate the user-provided address
+
         $('.welcome').css('visibility', 'hidden');
     };
 }
@@ -35,5 +34,18 @@ function LoadLocation(tf){
     if (tf) return "Seattle, WA";
     return "";
 }
+
+var map;
+function initMap(){
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: -34.397, lng: 150.644},
+      zoom: 8
+    });
+}
+
+
+
+
+
 
 ko.applyBindings(new AppViewModel());
