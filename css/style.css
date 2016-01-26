@@ -109,6 +109,7 @@ html, body, .container {
     height: 64px;
     display: table;
     z-index: 100;
+	width: calc(100% - 220px);
 }
 
 .loc-display-text {

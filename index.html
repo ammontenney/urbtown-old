@@ -21,7 +21,10 @@
 
         <div class="loc-search-ctrls">
           <input type="text" class="txt-loc-search tap"><br>
-          <img class="radius-loc-search tap" src="http://placehold.it/48x48">
+          <select class="radius-loc-search tap"
+                  data-bind="foreach: radiusValues, value: locationRadius">
+              <option data-bind="value: $data, text: $data+' miles'"></option>
+          </select>
           <img class="go-loc-search tap" src="http://placehold.it/48x48">
         </div>
 
@@ -41,19 +44,18 @@
                 whenever you need to go somewhere new.</p>
                 <p class="welcome-info-label">Enter a location to begin exploring:</p>
                 <div class="welcome-info-controls">
-                    <input class="welcome-info-controls-input"
-                           data-bind="value: location">
-                    <select class="welcome-info-controls-select"
-                            data-bind="value: locationRadius">
-                        <option value="5">5 miles</option>
-                        <option value="10">10 miles</option>
-                        <option value="15">15 miles</option>
-                        <option value="20">20 miles</option>
-                        <option value="25">25 miles</option>
-                    </select>
-                    <button class="welcome-info-controls-button"
-                            data-bind="click: verifyInitialLocation">
-                            Explore!</button>
+                    <form>
+                        <input class="welcome-info-controls-input"
+                               data-bind="value: location">
+                        <select class="welcome-info-controls-select"
+                                data-bind="foreach: radiusValues, value: locationRadius">
+                            <option data-bind="value: $data, text: $data+' miles'"></option>
+                        </select>
+                        <input type="submit"
+                                value="Explore!"
+                                class="welcome-info-controls-button"
+                                data-bind="click: verifyInitialLocation">
+                    </form>
                 </div>
                 <div data-bind="html: welcomeError"></div>
             </div>

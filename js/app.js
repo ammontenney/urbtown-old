@@ -12,6 +12,7 @@ function AppViewModel() {
     // TODO: load location from localStorage
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
+    t.radiusValues = ko.observableArray([5,10,15,20,25]);
 
     t.welcomeError = ko.observable("&nbsp");
 
@@ -38,6 +39,7 @@ function VerifyInitialLocation(t) {
         orientMap(t.location());
 
         $('.welcome').css('visibility', 'hidden');
+        console.log(t.locationRadius())
     };
 }
 
