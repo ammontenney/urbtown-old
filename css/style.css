@@ -131,6 +131,7 @@ html, body, .container {
   right: 0;
   width: 180px;
   height: 104px;
+  display: none;
 }
 
 .txt-loc-search {

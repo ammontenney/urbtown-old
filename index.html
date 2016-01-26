@@ -16,16 +16,23 @@
         </div>
 
         <div class="loc-search">
-          <img class="tap" src="http://placehold.it/48x48">
+          <img class="tap"
+                src="http://placehold.it/48x48"
+                data-bind="click: toggleSearch">
         </div>
 
         <div class="loc-search-ctrls">
-          <input type="text" class="txt-loc-search tap"><br>
-          <select class="radius-loc-search tap"
-                  data-bind="foreach: radiusValues, value: locationRadius">
-              <option data-bind="value: $data, text: $data+' miles'"></option>
-          </select>
-          <img class="go-loc-search tap" src="http://placehold.it/48x48">
+            <form>
+                <input type="text" class="txt-loc-search tap"><br>
+                <select class="radius-loc-search tap"
+                      data-bind="foreach: radiusValues, value: locationRadius">
+                  <option data-bind="value: $data, text: $data+' miles'"></option>
+                </select>
+                <input type="submit"
+                        value="Go!"
+                        class="go-loc-search tap"
+                        data-bind="click: UpdateLocation">
+            </form>
         </div>
 
         <div class="menu">
@@ -54,7 +61,7 @@
                         <input type="submit"
                                 value="Explore!"
                                 class="welcome-info-controls-button"
-                                data-bind="click: verifyInitialLocation">
+                                data-bind="click: SetInitialLocation">
                     </form>
                 </div>
                 <div data-bind="html: welcomeError"></div>

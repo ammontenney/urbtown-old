@@ -8,19 +8,19 @@ data.geoLocation = {};
 
 function AppViewModel() {
     var t = this;
-
+    t.radiusValues = ko.observableArray([5,10,15,20,25]);
+    t.welcomeError = ko.observable("&nbsp");
     // TODO: load location from localStorage
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
-    t.radiusValues = ko.observableArray([5,10,15,20,25]);
 
-    t.welcomeError = ko.observable("&nbsp");
-
-    t.verifyInitialLocation = VerifyInitialLocation(t);
+    t.SetInitialLocation = SetInitialLocation(t);
+    t.UpdateLocation = UpdateLocation(t);
+    t.toggleSearch = ToggleSearch(t);
 
 }
 
-function VerifyInitialLocation(t) {
+function SetInitialLocation(t) {
     return function (){
         var msg = "";
 
@@ -30,6 +30,8 @@ function VerifyInitialLocation(t) {
             return;
         }
 
+        // TODO verify the searchRadius value is valid
+
         if (!app.mapReady){
             msg = "The map is not ready yet. Please wait 5 seconds and try again.";
             t.welcomeError(msg);
@@ -38,8 +40,33 @@ function VerifyInitialLocation(t) {
 
         orientMap(t.location());
 
-        $('.welcome').css('visibility', 'hidden');
-        console.log(t.locationRadius())
+        $('.welcome').css('display', 'none');
+    };
+}
+
+function UpdateLocation(t){
+    return function(){
+        var locSrch = $('.txt-loc-search');
+        var radSrch = $('.radius-loc-search');
+        var tmpLoc = locSrch.val();
+        var tmpRad = radSrch.val();
+        // TODO verify the searchRadius value is valid
+
+        if (tmpLoc){
+            t.location(tmpLoc);
+            t.locationRadius(tmpRad);
+            orientMap(t.location());
+        }
+
+        //TODO reset categories for new location
+        locSrch.val("");
+        $('.loc-search-ctrls').css('display', 'none');
+    };
+}
+
+function ToggleSearch(t){
+    return function (){
+        $('.loc-search-ctrls').toggle();
     };
 }
 
