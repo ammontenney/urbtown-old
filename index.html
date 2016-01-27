@@ -35,13 +35,10 @@
             </form>
         </div>
 
-        <div class="menu">
-            <img class="tap" src="http://placehold.it/48x48"><br>
-            <img class="tap" src="http://placehold.it/48x48"><br>
-            <img class="tap" src="http://placehold.it/48x48"><br>
-            <img class="tap" src="http://placehold.it/48x48"><br>
-            <img class="tap" src="http://placehold.it/48x48"><br>
-            <img class="tap" src="http://placehold.it/48x48"><br>
+        <div class="menu" data-bind="foreach: categories">
+            <img class="tap cat-button"
+                 data-bind="attr: {alt: title, src: icon}, click: $parent.CategoryClick">
+            <br>
         </div>
 
         <div class="welcome">

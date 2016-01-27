@@ -6,9 +6,21 @@ app.mapReady = false;
 var data = {};
 data.geoLocation = {};
 
+var RADIUSVALS = [5,10,15,20,25];
+var CATEGORIES = [
+    {title:'Education', icon:'img/blue.svg', api:''},
+    {title:'Medical', icon:'img/red.svg', api:''},
+    {title:'Dining', icon:'img/green.svg', api:''},
+    {title:'Shopping', icon:'img/gray.svg', api:''},
+    {title:'Automotive', icon:'img/yellow.svg', api:''},
+    {title:'Entertainment', icon:'img/orange.svg', api:''}
+];
+
+
 function AppViewModel() {
     var t = this;
-    t.radiusValues = ko.observableArray([5,10,15,20,25]);
+    t.radiusValues = ko.observableArray(RADIUSVALS);
+    t.categories = ko.observableArray(CATEGORIES);
     t.welcomeError = ko.observable("&nbsp");
     // TODO: load location from localStorage
     t.location = ko.observable();
@@ -17,6 +29,7 @@ function AppViewModel() {
     t.SetInitialLocation = SetInitialLocation(t);
     t.UpdateLocation = UpdateLocation(t);
     t.toggleSearch = ToggleSearch(t);
+    t.CategoryClick = CategoryClick(t);
 
 }
 
@@ -67,6 +80,12 @@ function UpdateLocation(t){
 function ToggleSearch(t){
     return function (){
         $('.loc-search-ctrls').toggle();
+    };
+}
+
+function CategoryClick(t){
+    return function(data){
+        console.log(data);
     };
 }
 
