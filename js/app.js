@@ -93,7 +93,7 @@ function NotifyMapIsReady(){
     app.geocoder = new google.maps.Geocoder();
     app.map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 37.2739675, lng: -104.678212},
-        zoom: 12
+        zoom: 13
     });
 }
 
