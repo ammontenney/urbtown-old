@@ -30,6 +30,7 @@ function AppViewModel() {
     t.UpdateLocation = UpdateLocation(t);
     t.toggleSearch = ToggleSearch(t);
     t.CategoryClick = CategoryClick(t);
+    t.ArrowClick = ArrowClick(t);
 
 }
 
@@ -113,7 +114,6 @@ function orientMap(location){
 
 }
 
-
 function NotifyMapIsReady(){
     app.mapReady = true;
 
@@ -124,6 +124,13 @@ function NotifyMapIsReady(){
     });
 }
 
+var results = $('.results');
+function ArrowClick(t){
+    return function (){
+        console.log("arrow clicked");
+        results.toggleClass('open');
+    };
+}
 
 
 

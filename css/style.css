@@ -153,7 +153,7 @@ html, body, .container {
 
 .welcome {
     display: table;
-    z-index: 200;
+    z-index: 300;
     height: 100%;
     width: 100%;
     position: absolute;
@@ -219,4 +219,32 @@ html, body, .container {
 .cat-button {
 	width: 48px;
 	height: 48px;
+}
+
+.flip {
+	transform: scale(-1, 1);
+}
+
+.arrow {
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: calc(50% - 12px);
+    left: -24px;
+	z-index: inherit;
+}
+
+.results {
+	width: 160px;
+	height: 100%;
+	position: absolute;
+	right: -160px;
+	top: 0;
+	z-index: 200;
+	background-color: gray;
+	transition: transform 0.3s ease
+}
+
+.results.open {
+	transform: translate(0,0);
 }
