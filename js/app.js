@@ -53,16 +53,18 @@ function SetInitialLocation(t) {
 
         orientMap(t.location());
 
+        $('welcome-info-controls-input').blur();
         $('.welcome').css('display', 'none');
     };
 }
 
+var txt_loc_search = $('.txt-loc-search');
+var radius_loc_search = $('.radius-loc-search');
+var loc_search_ctrls = $('.loc-search-ctrls');
 function UpdateLocation(t){
     return function(){
-        var locSrch = $('.txt-loc-search');
-        var radSrch = $('.radius-loc-search');
-        var tmpLoc = locSrch.val();
-        var tmpRad = radSrch.val();
+        var tmpLoc = txt_loc_search.val();
+        var tmpRad = radius_loc_search.val();
         // TODO verify the searchRadius value is valid
 
         if (tmpLoc){
@@ -72,14 +74,20 @@ function UpdateLocation(t){
         }
 
         //TODO reset categories for new location
-        locSrch.val("");
-        $('.loc-search-ctrls').css('display', 'none');
+        txt_loc_search.val("");
+        txt_loc_search.blur();
+        loc_search_ctrls.css('display', 'none');
     };
 }
 
+var loc_search_ctrls = $('.loc-search-ctrls');
+var txt_loc_search = $('.txt-loc-search');
 function ToggleSearch(t){
     return function (){
-        $('.loc-search-ctrls').toggle();
+        loc_search_ctrls.toggle();
+
+        if (loc_search_ctrls.css('display') !== 'none')
+            txt_loc_search.focus();
     };
 }
 

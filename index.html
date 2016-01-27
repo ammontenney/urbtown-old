@@ -49,7 +49,8 @@
                 <p class="welcome-info-label">Enter a location to begin exploring:</p>
                 <div class="welcome-info-controls">
                     <form>
-                        <input class="welcome-info-controls-input"
+                        <input type="text" autofocus
+                               class="welcome-info-controls-input"
                                data-bind="value: location">
                         <select class="welcome-info-controls-select"
                                 data-bind="foreach: radiusValues, value: locationRadius">
