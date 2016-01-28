@@ -125,10 +125,17 @@ function NotifyMapIsReady(){
 }
 
 var results = $('.results');
+var arrow = $('.arrow');
+var resultsToggle = false;
 function ArrowClick(t){
     return function (){
         console.log("arrow clicked");
-        results.toggleClass('open');
+        resultsToggle = !resultsToggle;
+
+        results.toggleClass('open', resultsToggle);
+        // results.toggleClass('results', !resultsToggle);
+        arrow.toggleClass('flip', resultsToggle);
+
     };
 }
 
