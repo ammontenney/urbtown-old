@@ -129,13 +129,9 @@ var arrow = $('.arrow');
 var resultsToggle = false;
 function ArrowClick(t){
     return function (){
-        console.log("arrow clicked");
         resultsToggle = !resultsToggle;
-
         results.toggleClass('open', resultsToggle);
-        // results.toggleClass('results', !resultsToggle);
         arrow.toggleClass('flip', resultsToggle);
-
     };
 }
 
