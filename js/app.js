@@ -103,15 +103,10 @@ function CategoryClick(t){
         var category = data.title;
         t.currentCategory(category);
 
-        if (!searchData[category]){
+        if (!searchData[category])
             searchData[category] = GetSearchResults(category);
-            console.log('write!');
-        }
 
         t.currentResults(searchData[category]);
-
-        console.log("t.currentResults(): " + t.currentResults());
-        console.log("searchData[category]: " + searchData[category]);
     };
 }
 
