@@ -243,9 +243,9 @@ html, body, .container {
 	float: right;
 	width: 160px;
 	height: 100%;
+	background-color: white;
 	transform: translate(100%,0);
 	z-index: 200;
-	background-color: gray;
 	transition: transform 0.3s ease
 }
 

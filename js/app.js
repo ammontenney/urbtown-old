@@ -6,6 +6,9 @@ app.mapReady = false;
 var data = {};
 data.geoLocation = {};
 
+var searchData = {'abc': 123, 'xyz': 456};
+var dummyResults = [2, 4, 6, 8, 10];
+
 var RADIUSVALS = [5,10,15,20,25];
 var CATEGORIES = [
     {title:'Education', icon:'img/blue.svg', api:''},
@@ -31,6 +34,9 @@ function AppViewModel() {
     t.toggleSearch = ToggleSearch(t);
     t.CategoryClick = CategoryClick(t);
     t.ArrowClick = ArrowClick(t);
+
+    t.currentCategory = ko.observable('No category has been selected');
+    t.currentResults = ko.observableArray();
 
 }
 
@@ -94,13 +100,25 @@ function ToggleSearch(t){
 
 function CategoryClick(t){
     return function(data){
-        console.log(data);
+        var category = data.title;
+        t.currentCategory(category);
+
+        if (!searchData[category]){
+            searchData[category] = GetSearchResults(category);
+            console.log('write!');
+        }
+
+        t.currentResults(searchData[category]);
+
+        console.log("t.currentResults(): " + t.currentResults());
+        console.log("searchData[category]: " + searchData[category]);
     };
 }
 
-function LoadLocation(tf){
-    if (tf) return "Seattle, WA";
-    return "";
+function GetSearchResults(category){
+    // TODO populate results for 'category' from google places
+    // TODO small bug here: we need to provide a deep copy of dummyResults
+    return dummyResults;
 }
 
 function orientMap(location){

@@ -69,6 +69,10 @@
         <div class="results">
             <img class="arrow" alt="Open Results" src="img/arrow.svg"
                  data-bind="click: ArrowClick">
+            <h3 data-bind="text: currentCategory"></h3>
+            <ul data-bind="foreach: currentResults">
+                <li data-bind="text: $data"></li>
+            </ul>
         </div>
 
         <div id="map" class="map"></div>
