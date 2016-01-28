@@ -117,8 +117,7 @@ function CategoryClick(t){
 
 function GetSearchResults(category){
     // TODO populate results for 'category' from google places
-    // TODO small bug here: we need to provide a deep copy of dummyResults
-    return dummyResults;
+    return $.extend(true, [], dummyResults);
 }
 
 function orientMap(location){
