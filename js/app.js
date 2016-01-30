@@ -1,10 +1,11 @@
+var myModel = new AppViewModel();
+
 var app = {};
 app.map = {};
 app.geocoder = {};
 app.mapReady = false;
 
 var data = {};
-data.geoLocation = {};
 
 var searchData = {'abc': 123, 'xyz': 456};
 var dummyResults = [2, 4, 6, 8, 10];
@@ -28,6 +29,8 @@ function AppViewModel() {
     // TODO: load location from localStorage
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
+    t.currentCategory = ko.observable('No category has been selected');
+    t.currentResults = ko.observableArray();
 
     t.SetInitialLocation = SetInitialLocation(t);
     t.UpdateLocation = UpdateLocation(t);
@@ -35,8 +38,10 @@ function AppViewModel() {
     t.CategoryClick = CategoryClick(t);
     t.ArrowClick = ArrowClick(t);
 
-    t.currentCategory = ko.observable('No category has been selected');
-    t.currentResults = ko.observableArray();
+    if (loadLocalData())
+        t.location(data.location);
+    else
+        $('.welcome').css('visibility', 'visible');
 
 }
 
@@ -69,7 +74,7 @@ function SetInitialLocation(t) {
         $('welcome-info-controls-input').blur();
 
         // We're done with the welcome screen and we can now hide it
-        $('.welcome').css('display', 'none');
+        $('.welcome').css('visibility', 'hidden');
     };
 }
 
@@ -130,26 +135,51 @@ function centerMap(t){
             console.log("Geocode didn't work: " + status);
             return;
         }
-        console.log("location: " + t.location());
-        console.log(results[0].geometry.location);
-        console.log(results);
 
+        // get the formatted address and lat/lng and save them to localStorage
         t.location(results[0].formatted_address);
         data.location = results[0].formatted_address;
-        data.geoLocation = results[0].geometry.location;
+        data.lat = results[0].geometry.location.lat();
+        data.lng = results[0].geometry.location.lng();
+        saveLocalData();
 
         app.map.setCenter(results[0].geometry.location);
-
     }
 
 }
 
+function saveLocalData(){
+    var json_data = JSON.stringify(data);
+    localStorage.setItem("urbtown", json_data);
+}
+
+function loadLocalData(){
+    var json_data = localStorage.getItem("urbtown");
+    if (!json_data)
+        return false;
+
+    // TODO escape input from localStorage to make sure it wasn't messed with
+    data = JSON.parse(json_data);
+
+    return true;
+}
+
+
 function NotifyMapIsReady(){
     app.mapReady = true;
 
+    // these coordinates default to the center of the USA
+    var myLat = 37.2739675;
+    var myLng = -104.678212;
+
+    if (!$.isEmptyObject(data)){
+        myLat = data.lat;
+        myLng = data.lng;
+    }
+
     app.geocoder = new google.maps.Geocoder();
     app.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 37.2739675, lng: -104.678212},
+        center: {lat: myLat, lng: myLng},
         zoom: 13
     });
 }
@@ -168,4 +198,4 @@ function ArrowClick(t){
 
 
 
-ko.applyBindings(new AppViewModel());
+ko.applyBindings(myModel);

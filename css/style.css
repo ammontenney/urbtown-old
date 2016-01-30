@@ -156,7 +156,8 @@ html, body, .container {
 }
 
 .welcome {
-    display: table;
+	visibility: hidden;
+	display: table;
     z-index: 300;
     height: 100%;
     width: 100%;
