@@ -44,6 +44,8 @@ function SetInitialLocation(t) {
     return function (){
         var msg = "";
 
+        // make sure user entered a location
+        // TODO make user input is escaped
         if (!t.location()){
             msg = "* Please enter a location";
             t.welcomeError(msg);
@@ -52,15 +54,21 @@ function SetInitialLocation(t) {
 
         // TODO verify the searchRadius value is valid
 
+        // Somehow the user managed to enter a location in before the map is ready
         if (!app.mapReady){
             msg = "The map is not ready yet. Please wait 5 seconds and try again.";
             t.welcomeError(msg);
             return;
         }
 
-        orientMap(t.location());
+        // The data has made it through the gauntlet and the map can be shown
+        centerMap(t);
 
+        // Remove the focus from the textbox on the welcome screen so we
+        // ca set the focus elsewhere
         $('welcome-info-controls-input').blur();
+
+        // We're done with the welcome screen and we can now hide it
         $('.welcome').css('display', 'none');
     };
 }
@@ -77,7 +85,7 @@ function UpdateLocation(t){
         if (tmpLoc){
             t.location(tmpLoc);
             t.locationRadius(tmpRad);
-            orientMap(t.location());
+            centerMap(t);
         }
 
         //TODO reset categories for new location
@@ -115,14 +123,24 @@ function GetSearchResults(category){
     return $.extend(true, [], dummyResults);
 }
 
-function orientMap(location){
-    app.geocoder.geocode({'address':location}, function(results, status){
-        if (status == google.maps.GeocoderStatus.OK)
-            app.map.setCenter(results[0].geometry.location);
-        else
+function centerMap(t){
+    app.geocoder.geocode({'address':t.location()}, updateGeo);
+    function updateGeo(results, status){
+        if (status !== google.maps.GeocoderStatus.OK){
             console.log("Geocode didn't work: " + status);
-    });
+            return;
+        }
+        console.log("location: " + t.location());
+        console.log(results[0].geometry.location);
+        console.log(results);
 
+        t.location(results[0].formatted_address);
+        data.location = results[0].formatted_address;
+        data.geoLocation = results[0].geometry.location;
+
+        app.map.setCenter(results[0].geometry.location);
+
+    }
 
 }
 
