@@ -1,11 +1,9 @@
-var myModel = new AppViewModel();
-
 var app = {};
 app.map = {};
 app.geocoder = {};
 app.mapReady = false;
 
-var data = {};
+var localData = {};
 
 var searchData = {'abc': 123, 'xyz': 456};
 var dummyResults = [2, 4, 6, 8, 10];
@@ -39,10 +37,9 @@ function AppViewModel() {
     t.ArrowClick = ArrowClick(t);
 
     if (loadLocalData())
-        t.location(data.location);
+        t.location(localData.location);
     else
         $('.welcome').css('visibility', 'visible');
-
 }
 
 function SetInitialLocation(t) {
@@ -112,8 +109,8 @@ function ToggleSearch(t){
 }
 
 function CategoryClick(t){
-    return function(data){
-        var category = data.title;
+    return function(d){
+        var category = d.title;
         t.currentCategory(category);
 
         if (!searchData[category])
@@ -138,9 +135,9 @@ function centerMap(t){
 
         // get the formatted address and lat/lng and save them to localStorage
         t.location(results[0].formatted_address);
-        data.location = results[0].formatted_address;
-        data.lat = results[0].geometry.location.lat();
-        data.lng = results[0].geometry.location.lng();
+        localData.location = results[0].formatted_address;
+        localData.lat = results[0].geometry.location.lat();
+        localData.lng = results[0].geometry.location.lng();
         saveLocalData();
 
         app.map.setCenter(results[0].geometry.location);
@@ -149,17 +146,18 @@ function centerMap(t){
 }
 
 function saveLocalData(){
-    var json_data = JSON.stringify(data);
+    var json_data = JSON.stringify(localData);
     localStorage.setItem("urbtown", json_data);
 }
 
 function loadLocalData(){
     var json_data = localStorage.getItem("urbtown");
+
     if (!json_data)
         return false;
 
     // TODO escape input from localStorage to make sure it wasn't messed with
-    data = JSON.parse(json_data);
+    localData = JSON.parse(json_data);
 
     return true;
 }
@@ -167,14 +165,13 @@ function loadLocalData(){
 
 function NotifyMapIsReady(){
     app.mapReady = true;
-
     // these coordinates default to the center of the USA
     var myLat = 37.2739675;
     var myLng = -104.678212;
 
-    if (!$.isEmptyObject(data)){
-        myLat = data.lat;
-        myLng = data.lng;
+    if (!$.isEmptyObject(localData)){
+        myLat = localData.lat;
+        myLng = localData.lng;
     }
 
     app.geocoder = new google.maps.Geocoder();
@@ -196,6 +193,5 @@ function ArrowClick(t){
 }
 
 
-
-
+var myModel = new AppViewModel();
 ko.applyBindings(myModel);
