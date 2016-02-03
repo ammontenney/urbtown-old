@@ -162,7 +162,6 @@ function loadLocalData(){
     return true;
 }
 
-
 function NotifyMapIsReady(){
     app.mapReady = true;
     // these coordinates default to the center of the USA
@@ -191,6 +190,12 @@ function ArrowClick(t){
         arrow.toggleClass('flip', resultsToggle);
     };
 }
+
+function ResultItemClick(d){
+    console.log('item clicked!');
+    console.log(d);
+}
+
 
 
 var myModel = new AppViewModel();
