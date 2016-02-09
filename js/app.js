@@ -6,8 +6,7 @@ app.mapReady = false;
 
 var localData = {};
 
-var searchData = {'abc': 123, 'xyz': 456};
-var dummyResults = [2, 4, 6, 8, 10];
+var searchData = {};
 
 var RADIUSVALS = [5,10,15,20,25];
 var CATEGORIES = [
@@ -116,7 +115,14 @@ function ToggleSearch(t){
 
 function CategoryClick(t){
     return function(d){
-        t.currentCategoryLabel(d);
+        t.currentCategoryLabel(d.title);
+
+        var category = d.title;
+        if (searchData[category]){
+            t.currentResults(searchData[category]);
+            console.log("recycled results!");
+            return;
+        }
 
         var myLoc = new google.maps.LatLng(localData.lat, localData.lng);
         var request = {
@@ -124,28 +130,18 @@ function CategoryClick(t){
             radius: '5000',
             types: d.types
         };
-        app.places.nearbySearch(request, callback);
+        app.places.nearbySearch(request, function(results, status){
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                console.log("Places search did not work: " + status );
+                return;
+            }
 
-        var category = d.title;
-        if (!searchData[category])
-            searchData[category] = GetSearchResults(category);
+            searchData[category] = results;
+            t.currentResults(results);
+        });
 
-        t.currentResults(searchData[category]);
+
     };
-}
-
-function callback(results, status){
-    if (status !== google.maps.places.PlacesServiceStatus.OK) {
-        console.log("Places search did not work: " + status );
-        return;
-    }
-
-    console.log(results);
-}
-
-function GetSearchResults(category){
-    // TODO populate results for 'category' from google places
-    return $.extend(true, [], dummyResults);
 }
 
 function centerMap(t){
