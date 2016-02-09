@@ -1,6 +1,7 @@
 var app = {};
 app.map = {};
 app.geocoder = {};
+app.places = {};
 app.mapReady = false;
 
 var localData = {};
@@ -10,14 +11,19 @@ var dummyResults = [2, 4, 6, 8, 10];
 
 var RADIUSVALS = [5,10,15,20,25];
 var CATEGORIES = [
-    {title:'Education', icon:'img/blue.svg', api:''},
-    {title:'Medical', icon:'img/red.svg', api:''},
-    {title:'Dining', icon:'img/green.svg', api:''},
-    {title:'Shopping', icon:'img/gray.svg', api:''},
-    {title:'Automotive', icon:'img/yellow.svg', api:''},
-    {title:'Entertainment', icon:'img/orange.svg', api:''}
+    {title:'Education', icon:'img/blue.svg', api:'',
+        types:['library', 'school', 'university']},
+    {title:'Medical', icon:'img/red.svg', api:'',
+        types:['dentist', 'doctor', 'health', 'hospital', 'pharmacy', 'physiotherapist']},
+    {title:'Dining', icon:'img/green.svg', api:'',
+        types:['cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant']},
+    {title:'Shopping', icon:'img/gray.svg', api:'',
+        types:['book_store', 'bakery', 'clothing_store', 'convenience_store', 'department_store', 'electronics_store', 'furniture_store', 'grocery_or_supermarket', 'hardware_store', 'home_goods_store', 'pet_store', 'shoe_store', 'shopping_mall', 'store']},
+    {title:'Automotive', icon:'img/yellow.svg', api:'',
+        types:['car_dealer', 'car_rental', 'car_repair', 'car_wash', 'gas_station', 'parking']},
+    {title:'Entertainment', icon:'img/orange.svg', api:'',
+        types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']}
 ];
-
 
 function AppViewModel() {
     var t = this;
@@ -27,7 +33,7 @@ function AppViewModel() {
     // TODO: load location from localStorage
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
-    t.currentCategory = ko.observable('No category has been selected');
+    t.currentCategoryLabel = ko.observable('No category has been selected');
     t.currentResults = ko.observableArray();
 
     t.SetInitialLocation = SetInitialLocation(t);
@@ -110,14 +116,31 @@ function ToggleSearch(t){
 
 function CategoryClick(t){
     return function(d){
-        var category = d.title;
-        t.currentCategory(category);
+        t.currentCategoryLabel(d);
 
+        var myLoc = new google.maps.LatLng(localData.lat, localData.lng);
+        var request = {
+            location: myLoc,
+            radius: '5000',
+            types: d.types
+        };
+        app.places.nearbySearch(request, callback);
+
+        var category = d.title;
         if (!searchData[category])
             searchData[category] = GetSearchResults(category);
 
         t.currentResults(searchData[category]);
     };
+}
+
+function callback(results, status){
+    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+        console.log("Places search did not work: " + status );
+        return;
+    }
+
+    console.log(results);
 }
 
 function GetSearchResults(category){
@@ -178,6 +201,7 @@ function NotifyMapIsReady(){
         center: {lat: myLat, lng: myLng},
         zoom: 13
     });
+    app.places = new google.maps.places.PlacesService(app.map);
 }
 
 var results = $('.results');
