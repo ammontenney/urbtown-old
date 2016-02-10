@@ -117,13 +117,14 @@ function CategoryClick(t){
     return function(d){
         t.currentCategoryLabel(d.title);
 
+        // check if we retrieved the results previously
         var category = d.title;
         if (searchData[category]){
             t.currentResults(searchData[category]);
-            console.log("recycled results!");
             return;
         }
 
+        // in the case that results weren't previously stored, go get them
         var myLoc = new google.maps.LatLng(localData.lat, localData.lng);
         var request = {
             location: myLoc,
@@ -138,6 +139,7 @@ function CategoryClick(t){
 
             searchData[category] = results;
             t.currentResults(results);
+            
         });
 
 
