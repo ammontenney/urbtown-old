@@ -66,27 +66,10 @@ function AppViewModel() {
 
     };
 
-
-
-
-    t.UpdateLocation = UpdateLocation(t);
-    t.toggleSearch = ToggleSearch(t);
-    t.CategoryClick = CategoryClick(t);
-    t.ArrowClick = ArrowClick(t);
-
-    if (loadLocalData())
-        t.location(localData.location);
-    else
-        $('.welcome').css('visibility', 'visible');
-}
-
-
-
-var txt_loc_search = $('.txt-loc-search');
-var radius_loc_search = $('.radius-loc-search');
-var loc_search_ctrls = $('.loc-search-ctrls');
-function UpdateLocation(t){
-    return function(){
+    var txt_loc_search = $('.txt-loc-search');
+    var radius_loc_search = $('.radius-loc-search');
+    var loc_search_ctrls = $('.loc-search-ctrls');
+    t.UpdateLocation = function(){
         var tmpLoc = txt_loc_search.val();
         var tmpRad = radius_loc_search.val();
         // TODO verify the searchRadius value is valid
@@ -102,7 +85,22 @@ function UpdateLocation(t){
         txt_loc_search.blur();
         loc_search_ctrls.css('display', 'none');
     };
+
+
+
+    t.toggleSearch = ToggleSearch(t);
+    t.CategoryClick = CategoryClick(t);
+    t.ArrowClick = ArrowClick(t);
+
+    if (loadLocalData())
+        t.location(localData.location);
+    else
+        $('.welcome').css('visibility', 'visible');
 }
+
+
+
+
 
 var loc_search_ctrls = $('.loc-search-ctrls');
 var txt_loc_search = $('.txt-loc-search');
