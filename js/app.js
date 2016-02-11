@@ -29,26 +29,12 @@ function AppViewModel() {
     t.radiusValues = ko.observableArray(RADIUSVALS);
     t.categories = ko.observableArray(CATEGORIES);
     t.welcomeError = ko.observable("&nbsp");
-    // TODO: load location from localStorage
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
     t.currentCategoryLabel = ko.observable('No category has been selected');
     t.currentResults = ko.observableArray();
 
-    t.SetInitialLocation = SetInitialLocation(t);
-    t.UpdateLocation = UpdateLocation(t);
-    t.toggleSearch = ToggleSearch(t);
-    t.CategoryClick = CategoryClick(t);
-    t.ArrowClick = ArrowClick(t);
-
-    if (loadLocalData())
-        t.location(localData.location);
-    else
-        $('.welcome').css('visibility', 'visible');
-}
-
-function SetInitialLocation(t) {
-    return function (){
+    t.SetInitialLocation = function() {
         var msg = "";
 
         // make sure user entered a location
@@ -77,8 +63,24 @@ function SetInitialLocation(t) {
 
         // We're done with the welcome screen and we can now hide it
         $('.welcome').css('visibility', 'hidden');
+
     };
+
+
+
+
+    t.UpdateLocation = UpdateLocation(t);
+    t.toggleSearch = ToggleSearch(t);
+    t.CategoryClick = CategoryClick(t);
+    t.ArrowClick = ArrowClick(t);
+
+    if (loadLocalData())
+        t.location(localData.location);
+    else
+        $('.welcome').css('visibility', 'visible');
 }
+
+
 
 var txt_loc_search = $('.txt-loc-search');
 var radius_loc_search = $('.radius-loc-search');
@@ -139,7 +141,7 @@ function CategoryClick(t){
 
             searchData[category] = results;
             t.currentResults(results);
-            
+
         });
 
 
