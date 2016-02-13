@@ -124,8 +124,15 @@ function AppViewModel() {
         });
     };
 
+    var results = $('.results');
+    var arrow = $('.arrow');
+    var resultsToggle = false;
+    t.ArrowClick = function(){
+            resultsToggle = !resultsToggle;
+            results.toggleClass('open', resultsToggle);
+            arrow.toggleClass('flip', resultsToggle);
+    };
 
-    t.ArrowClick = ArrowClick(t);
 
     if (loadLocalData())
         t.location(localData.location);
@@ -197,16 +204,7 @@ function NotifyMapIsReady(){
     app.places = new google.maps.places.PlacesService(app.map);
 }
 
-var results = $('.results');
-var arrow = $('.arrow');
-var resultsToggle = false;
-function ArrowClick(t){
-    return function (){
-        resultsToggle = !resultsToggle;
-        results.toggleClass('open', resultsToggle);
-        arrow.toggleClass('flip', resultsToggle);
-    };
-}
+
 
 function ResultItemClick(d){
     console.log('item clicked!');
