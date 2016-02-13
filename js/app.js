@@ -86,9 +86,14 @@ function AppViewModel() {
         loc_search_ctrls.css('display', 'none');
     };
 
+    t.ToggleSearch = function(){
+        loc_search_ctrls.toggle();
+
+        if (loc_search_ctrls.css('display') !== 'none')
+            txt_loc_search.focus();
+    };
 
 
-    t.toggleSearch = ToggleSearch(t);
     t.CategoryClick = CategoryClick(t);
     t.ArrowClick = ArrowClick(t);
 
@@ -102,16 +107,7 @@ function AppViewModel() {
 
 
 
-var loc_search_ctrls = $('.loc-search-ctrls');
-var txt_loc_search = $('.txt-loc-search');
-function ToggleSearch(t){
-    return function (){
-        loc_search_ctrls.toggle();
 
-        if (loc_search_ctrls.css('display') !== 'none')
-            txt_loc_search.focus();
-    };
-}
 
 function CategoryClick(t){
     return function(d){
