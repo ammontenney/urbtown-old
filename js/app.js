@@ -93,24 +93,10 @@ function AppViewModel() {
             txt_loc_search.focus();
     };
 
+    t.CategoryClick = function(d){
+        // TODO: clear the stored categories when the map location is changed
+        // TODO: open the results div when a category is clicked
 
-    t.CategoryClick = CategoryClick(t);
-    t.ArrowClick = ArrowClick(t);
-
-    if (loadLocalData())
-        t.location(localData.location);
-    else
-        $('.welcome').css('visibility', 'visible');
-}
-
-
-
-
-
-
-
-function CategoryClick(t){
-    return function(d){
         t.currentCategoryLabel(d.title);
 
         // check if we retrieved the results previously
@@ -135,12 +121,25 @@ function CategoryClick(t){
 
             searchData[category] = results;
             t.currentResults(results);
-
         });
-
-
     };
+
+
+    t.ArrowClick = ArrowClick(t);
+
+    if (loadLocalData())
+        t.location(localData.location);
+    else
+        $('.welcome').css('visibility', 'visible');
 }
+
+
+
+
+
+
+
+
 
 function centerMap(t){
     app.geocoder.geocode({'address':t.location()}, updateGeo);
