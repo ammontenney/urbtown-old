@@ -8,7 +8,7 @@ function AppViewModel() {
 
     var localData = {};
 
-    var searchData = {};
+    var placeSearchData = {};
 
     var RADIUSVALS = [5,10,15,20,25];
     var CATEGORIES = [
@@ -94,35 +94,21 @@ function AppViewModel() {
             txt_loc_search.focus();
     };
 
-    t.CategoryClick = function(d){
+    t.CategoryClick = function(koData){
         // TODO: clear the stored categories when the map location is changed
         // TODO: open the results div when a category is clicked
 
-        t.currentCategoryLabel(d.title);
+        var category = koData.title;
+        t.currentCategoryLabel(category);
 
-        // check if we retrieved the results previously
-        var category = d.title;
-        if (searchData[category]){
-            t.currentResults(searchData[category]);
-            return;
+        if ( categoryIsLoaded(category) ){
+            switchCategory(category);
+            console.log('switch');
         }
-
-        // in the case that results weren't previously stored, go get them
-        var myLoc = new google.maps.LatLng(localData.lat, localData.lng);
-        var request = {
-            location: myLoc,
-            radius: '5000',
-            types: d.types
-        };
-        places.nearbySearch(request, function(results, status){
-            if (status !== google.maps.places.PlacesServiceStatus.OK) {
-                console.log("Places search did not work: " + status );
-                return;
-            }
-
-            searchData[category] = results;
-            t.currentResults(results);
-        });
+        else {
+            loadCategory(koData);
+            console.log('load');
+        }
     };
 
     var results = $('.results');
@@ -194,6 +180,41 @@ function AppViewModel() {
         return true;
     }
 
+    function categoryIsLoaded(category){
+        if (placeSearchData[category])
+            return true;
+        else
+            return false;
+    }
+
+    function loadCategory(data){
+        // TODO: enable user provide search radius for Places
+
+        var category = data.title;
+        var categoryTypes = data.types;
+
+        var loc = new google.maps.LatLng(localData.lat, localData.lng);
+        var request = {
+            location: loc,
+            radius: '5000',
+            types: categoryTypes
+        };
+
+        places.nearbySearch(request, function(results, status){
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                console.log("Places search did not work: " + status );
+                return;
+            }
+
+            placeSearchData[category] = results;
+            switchCategory(category);
+        });
+    }
+
+    function switchCategory(category){
+        t.currentResults(placeSearchData[category]);
+        // TODO: remove old markers and place new markers
+    }
 
     if (loadLocalData())
         t.location(localData.location);
