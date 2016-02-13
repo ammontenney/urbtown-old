@@ -133,6 +133,11 @@ function AppViewModel() {
             arrow.toggleClass('flip', resultsToggle);
     };
 
+    t.ResultItemClick = function (d){
+        console.log('item clicked!');
+        console.log(d);
+    };
+
 
     if (loadLocalData())
         t.location(localData.location);
@@ -205,11 +210,6 @@ function NotifyMapIsReady(){
 }
 
 
-
-function ResultItemClick(d){
-    console.log('item clicked!');
-    console.log(d);
-}
 
 
 
