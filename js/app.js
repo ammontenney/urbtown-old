@@ -138,6 +138,62 @@ function AppViewModel() {
         console.log(d);
     };
 
+    t.NotifyMapIsReady = function() {
+        app.mapReady = true;
+        // these coordinates default to the center of the USA
+        var myLat = 37.2739675;
+        var myLng = -104.678212;
+
+        if (!$.isEmptyObject(localData)){
+            myLat = localData.lat;
+            myLng = localData.lng;
+        }
+
+        app.geocoder = new google.maps.Geocoder();
+        app.map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: myLat, lng: myLng},
+            zoom: 13
+        });
+        app.places = new google.maps.places.PlacesService(app.map);
+    };
+
+
+    function centerMap(){
+        app.geocoder.geocode({'address':t.location()}, updateGeo);
+        function updateGeo(results, status){
+            if (status !== google.maps.GeocoderStatus.OK){
+                console.log("Geocode didn't work: " + status);
+                return;
+            }
+
+            // get the formatted address and lat/lng and save them to localStorage
+            t.location(results[0].formatted_address);
+            localData.location = results[0].formatted_address;
+            localData.lat = results[0].geometry.location.lat();
+            localData.lng = results[0].geometry.location.lng();
+            saveLocalData();
+
+            app.map.setCenter(results[0].geometry.location);
+        }
+    }
+
+    function saveLocalData(){
+        var json_data = JSON.stringify(localData);
+        localStorage.setItem("urbtown", json_data);
+    }
+
+    function loadLocalData(){
+        var json_data = localStorage.getItem("urbtown");
+
+        if (!json_data)
+            return false;
+
+        // TODO escape input from localStorage to make sure it wasn't messed with
+        localData = JSON.parse(json_data);
+
+        return true;
+    }
+
 
     if (loadLocalData())
         t.location(localData.location);
@@ -150,64 +206,6 @@ function AppViewModel() {
 
 
 
-
-
-
-function centerMap(t){
-    app.geocoder.geocode({'address':t.location()}, updateGeo);
-    function updateGeo(results, status){
-        if (status !== google.maps.GeocoderStatus.OK){
-            console.log("Geocode didn't work: " + status);
-            return;
-        }
-
-        // get the formatted address and lat/lng and save them to localStorage
-        t.location(results[0].formatted_address);
-        localData.location = results[0].formatted_address;
-        localData.lat = results[0].geometry.location.lat();
-        localData.lng = results[0].geometry.location.lng();
-        saveLocalData();
-
-        app.map.setCenter(results[0].geometry.location);
-    }
-
-}
-
-function saveLocalData(){
-    var json_data = JSON.stringify(localData);
-    localStorage.setItem("urbtown", json_data);
-}
-
-function loadLocalData(){
-    var json_data = localStorage.getItem("urbtown");
-
-    if (!json_data)
-        return false;
-
-    // TODO escape input from localStorage to make sure it wasn't messed with
-    localData = JSON.parse(json_data);
-
-    return true;
-}
-
-function NotifyMapIsReady(){
-    app.mapReady = true;
-    // these coordinates default to the center of the USA
-    var myLat = 37.2739675;
-    var myLng = -104.678212;
-
-    if (!$.isEmptyObject(localData)){
-        myLat = localData.lat;
-        myLng = localData.lng;
-    }
-
-    app.geocoder = new google.maps.Geocoder();
-    app.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: myLat, lng: myLng},
-        zoom: 13
-    });
-    app.places = new google.maps.places.PlacesService(app.map);
-}
 
 
 
