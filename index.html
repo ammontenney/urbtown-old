@@ -71,7 +71,7 @@
                  data-bind="click: ArrowClick">
             <h3 data-bind="text: currentCategoryLabel"></h3>
             <ul data-bind="foreach: currentResults">
-                <li class="result-item" data-bind="text: name+': '+vicinity , click: ResultItemClick"></li>
+                <li class="result-item" data-bind="text: name+': '+vicinity , click: $parent.ResultItemClick"></li>
             </ul>
         </div>
 
