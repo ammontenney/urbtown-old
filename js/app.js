@@ -56,10 +56,10 @@ function AppViewModel() {
         }
 
         // The data has made it through the gauntlet and the map can be shown
-        centerMap(t);
+        centerMap();
 
         // Remove the focus from the textbox on the welcome screen so we
-        // ca set the focus elsewhere
+        // can set the focus elsewhere
         $('welcome-info-controls-input').blur();
 
         // We're done with the welcome screen and we can now hide it
@@ -78,10 +78,10 @@ function AppViewModel() {
         if (tmpLoc){
             t.location(tmpLoc);
             t.locationRadius(tmpRad);
-            centerMap(t);
+            centerMap();
+            resetSearchData();
         }
 
-        //TODO reset categories for new location
         txt_loc_search.val("");
         txt_loc_search.blur();
         loc_search_ctrls.css('display', 'none');
@@ -95,9 +95,6 @@ function AppViewModel() {
     };
 
     t.CategoryClick = function(koData){
-        // TODO: clear the stored categories when the map location is changed
-        // TODO: open the results div when a category is clicked
-
         var category = koData.title;
         t.currentCategoryLabel(category);
 
@@ -245,6 +242,10 @@ function AppViewModel() {
             item = list[i];
             item.marker.setMap(tempMap);
         }
+    }
+
+    function resetSearchData(){
+        placeSearchData = {};
     }
 
     if (loadLocalData())
