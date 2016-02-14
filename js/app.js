@@ -7,6 +7,7 @@ function AppViewModel() {
     mapReady = false;
 
     var localData = {};
+    localData.radius = 5;
 
     var placeSearchData = {};
 
@@ -68,18 +69,18 @@ function AppViewModel() {
     };
 
     var txt_loc_search = $('.txt-loc-search');
-    var radius_loc_search = $('.radius-loc-search');
     var loc_search_ctrls = $('.loc-search-ctrls');
     t.UpdateLocation = function(){
         var tmpLoc = txt_loc_search.val();
-        var tmpRad = radius_loc_search.val();
         // TODO verify the searchRadius value is valid
 
         if (tmpLoc){
             t.location(tmpLoc);
-            t.locationRadius(tmpRad);
             centerMap();
             resetSearchData();
+        }
+        else {
+            t.locationRadius(localData.radius);
         }
 
         txt_loc_search.val("");
@@ -152,6 +153,7 @@ function AppViewModel() {
             localData.location = results[0].formatted_address;
             localData.lat = results[0].geometry.location.lat();
             localData.lng = results[0].geometry.location.lng();
+            localData.radius = t.locationRadius();
             saveLocalData();
 
             map.setCenter(results[0].geometry.location);
@@ -171,6 +173,7 @@ function AppViewModel() {
 
         // TODO escape input from localStorage to make sure it wasn't messed with
         localData = JSON.parse(json_data);
+        t.locationRadius(localData.radius);
 
         return true;
     }
@@ -183,15 +186,13 @@ function AppViewModel() {
     }
 
     function loadCategory(data){
-        // TODO: enable user-provided search radius for Places
-
         var category = data.title;
         var categoryTypes = data.types;
 
         var loc = new google.maps.LatLng(localData.lat, localData.lng);
         var request = {
             location: loc,
-            radius: '6000',
+            radius: localData.radius*1600,
             types: categoryTypes
         };
 
