@@ -103,11 +103,9 @@ function AppViewModel() {
 
         if ( categoryIsLoaded(category) ){
             switchCategory(category);
-            console.log('switch');
         }
         else {
             loadCategory(koData);
-            console.log('load');
         }
     };
 
@@ -188,7 +186,7 @@ function AppViewModel() {
     }
 
     function loadCategory(data){
-        // TODO: enable user provide search radius for Places
+        // TODO: enable user-provided search radius for Places
 
         var category = data.title;
         var categoryTypes = data.types;
@@ -196,7 +194,7 @@ function AppViewModel() {
         var loc = new google.maps.LatLng(localData.lat, localData.lng);
         var request = {
             location: loc,
-            radius: '5000',
+            radius: '6000',
             types: categoryTypes
         };
 
@@ -207,13 +205,46 @@ function AppViewModel() {
             }
 
             placeSearchData[category] = results;
+            addMarkers(category);
             switchCategory(category);
+
         });
     }
 
     function switchCategory(category){
+        toggleMarkers(false, t.currentResults());
+        toggleMarkers(true, placeSearchData[category]);
         t.currentResults(placeSearchData[category]);
-        // TODO: remove old markers and place new markers
+    }
+
+    function addMarkers(category){
+        var list = placeSearchData[category];
+        var len = list.length;
+        var item = {};
+
+        for (var i=0; i<len; i++){
+            item = list[i];
+            item.marker = new google.maps.Marker({
+                position: item.geometry.location,
+                map: null,
+                title: item.name
+            });
+        }
+    }
+
+    function toggleMarkers(display, categoryData){
+        var tempMap = null;
+        if (display){
+            tempMap = map;
+        }
+
+        var list = categoryData;
+        var len = list.length;
+        var item = {};
+        for (var i=0; i<len; i++){
+            item = list[i];
+            item.marker.setMap(tempMap);
+        }
     }
 
     if (loadLocalData())
