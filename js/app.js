@@ -246,9 +246,9 @@ function AppViewModel() {
     }
 
     function resetSearchData(){
-        // TODO: bug-fix - clear markers off screen manually on UpdateLocation
         // TODO: on UpdateLocation w/ empty query, update locationRadius
         // TODO: adjust map zoom according to locationRadius
+        toggleMarkers(false, t.currentResults());
         placeSearchData = {};
     }
 
