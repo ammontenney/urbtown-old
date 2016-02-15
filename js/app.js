@@ -1,5 +1,4 @@
 
-
 function AppViewModel() {
     map = {};
     geocoder = {};
@@ -11,25 +10,45 @@ function AppViewModel() {
 
     var placeSearchData = {};
 
-    var RADIUSVALS = [5,10,15,20,25];
-    var CATEGORIES = [
-        {title:'Education', icon:'img/blue.svg', api:'',
-            types:['library', 'school', 'university']},
-        {title:'Medical', icon:'img/red.svg', api:'',
-            types:['dentist', 'doctor', 'health', 'hospital', 'pharmacy', 'physiotherapist']},
-        {title:'Dining', icon:'img/green.svg', api:'',
-            types:['cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant']},
-        {title:'Shopping', icon:'img/gray.svg', api:'',
-            types:['book_store', 'bakery', 'clothing_store', 'convenience_store', 'department_store', 'electronics_store', 'furniture_store', 'grocery_or_supermarket', 'hardware_store', 'home_goods_store', 'pet_store', 'shoe_store', 'shopping_mall', 'store']},
-        {title:'Automotive', icon:'img/yellow.svg', api:'',
-            types:['car_dealer', 'car_rental', 'car_repair', 'car_wash', 'gas_station', 'parking']},
-        {title:'Entertainment', icon:'img/orange.svg', api:'',
-            types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']}
-    ];
+    var RADIUS_VALS = [5,10,15,20,25];
+
+    var CATEGORIES = {
+        Education:  {title:'Education',
+                    icon:'img/education.svg',
+                    color:'2c5aa0ff',
+                    api:'',
+                    types:['library', 'school', 'university']},
+        Medical:    {title:'Medical',
+                    icon:'img/medical.svg',
+                    color:'b80000ff',
+                    api:'',
+                    types:['dentist', 'doctor', 'health', 'hospital', 'pharmacy', 'physiotherapist']},
+        Dining:     {title:'Dining',
+                    icon:'img/dining.svg',
+                    color:'440055ff',
+                    api:'',
+                    types:['cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant']},
+        Shopping:   {title:'Shopping',
+                    icon:'img/retail.svg',
+                    color:'aa4400ff',
+                    api:'',
+                    types:['book_store', 'bakery', 'clothing_store', 'convenience_store', 'department_store', 'electronics_store', 'furniture_store', 'grocery_or_supermarket', 'hardware_store', 'home_goods_store', 'pet_store', 'shoe_store', 'shopping_mall', 'store']},
+        Automotive: {title:'Automotive',
+                    icon:'img/auto.svg',
+                    color:'005522ff',
+                    api:'',
+                    types:['car_dealer', 'car_rental', 'car_repair', 'car_wash', 'gas_station', 'parking']},
+        Leisure:    {title:'Leisure',
+                    icon:'img/leisure2.svg',
+                    color:'dbb400ff',
+                    api:'',
+                    types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']}
+    };
+
 
     var t = this;
-    t.radiusValues = ko.observableArray(RADIUSVALS);
-    t.categories = ko.observableArray(CATEGORIES);
+    t.radiusValues = ko.observableArray(RADIUS_VALS);
+    t.categories = ko.observableArray( categoriesToArray() );
     t.welcomeError = ko.observable("&nbsp");
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
@@ -71,9 +90,11 @@ function AppViewModel() {
     var txt_loc_search = $('.txt-loc-search');
     var loc_search_ctrls = $('.loc-search-ctrls');
     t.UpdateLocation = function(){
-        var tmpLoc = txt_loc_search.val();
-        // TODO verify the searchRadius value is valid
+        // TODO: verify the searchRadius value is valid
+        // TODO: on UpdateLocation w/ empty query, update locationRadius
+        // TODO: adjust map zoom according to locationRadius
 
+        var tmpLoc = txt_loc_search.val();
         if (tmpLoc){
             t.location(tmpLoc);
             centerMap();
@@ -220,12 +241,23 @@ function AppViewModel() {
         var len = list.length;
         var item = {};
 
+        // TODO: customize tag color by category
+        var tag = {
+            path: 'M 0,0 24,0, 24,24 12,40, 0,24 z',
+            fillColor: 'yellow',
+            fillOpacity: 0.8,
+            scale: 0.75,
+            strokeColor: 'black',
+            strokeWeight: 2
+        };
+
         for (var i=0; i<len; i++){
             item = list[i];
             item.marker = new google.maps.Marker({
                 position: item.geometry.location,
                 map: null,
-                title: item.name
+                title: item.name,
+                icon: tag
             });
         }
     }
@@ -246,11 +278,21 @@ function AppViewModel() {
     }
 
     function resetSearchData(){
-        // TODO: on UpdateLocation w/ empty query, update locationRadius
-        // TODO: adjust map zoom according to locationRadius
         toggleMarkers(false, t.currentResults());
         placeSearchData = {};
     }
+
+    function categoriesToArray(){
+        var keys = Object.keys(CATEGORIES);
+        var arr = [];
+
+        for (var i=0; i<keys.length; i++){
+            arr.push(CATEGORIES[ keys[i] ]);
+        }
+
+        return arr;
+    }
+
 
     if (loadLocalData())
         t.location(localData.location);
