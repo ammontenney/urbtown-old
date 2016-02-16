@@ -1,46 +1,46 @@
 
 function AppViewModel() {
-    map = {};
-    geocoder = {};
-    places = {};
-    mapReady = false;
-
+    var map = {};
+    var geocoder = {};
+    var places = {};
+    var mapReady = false;
     var localData = {};
     localData.radius = 5;
-
     var placeSearchData = {};
+
+    var SELECTED_MARKER_COLOR = 'green';
 
     var RADIUS_VALS = [5,10,15,20,25];
 
     var CATEGORIES = {
         Education:  {title:'Education',
                     icon:'img/education.svg',
-                    color:'2c5aa0ff',
+                    color:'#2c5aa0',
                     api:'',
                     types:['library', 'school', 'university']},
         Medical:    {title:'Medical',
                     icon:'img/medical.svg',
-                    color:'b80000ff',
+                    color:'#b80000',
                     api:'',
                     types:['dentist', 'doctor', 'health', 'hospital', 'pharmacy', 'physiotherapist']},
         Dining:     {title:'Dining',
                     icon:'img/dining.svg',
-                    color:'440055ff',
+                    color:'#440055',
                     api:'',
                     types:['cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant']},
         Shopping:   {title:'Shopping',
                     icon:'img/retail.svg',
-                    color:'aa4400ff',
+                    color:'#aa4400',
                     api:'',
                     types:['book_store', 'bakery', 'clothing_store', 'convenience_store', 'department_store', 'electronics_store', 'furniture_store', 'grocery_or_supermarket', 'hardware_store', 'home_goods_store', 'pet_store', 'shoe_store', 'shopping_mall', 'store']},
         Automotive: {title:'Automotive',
                     icon:'img/auto.svg',
-                    color:'005522ff',
+                    color:'#005522',
                     api:'',
                     types:['car_dealer', 'car_rental', 'car_repair', 'car_wash', 'gas_station', 'parking']},
         Leisure:    {title:'Leisure',
-                    icon:'img/leisure2.svg',
-                    color:'dbb400ff',
+                    icon:'img/leisure.svg',
+                    color:'#dbb400',
                     api:'',
                     types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']}
     };
@@ -241,15 +241,7 @@ function AppViewModel() {
         var len = list.length;
         var item = {};
 
-        // TODO: customize tag color by category
-        var tag = {
-            path: 'M 0,0 24,0, 24,24 12,40, 0,24 z',
-            fillColor: 'yellow',
-            fillOpacity: 0.8,
-            scale: 0.75,
-            strokeColor: 'black',
-            strokeWeight: 2
-        };
+        var tag = createTagIcon(category);
 
         for (var i=0; i<len; i++){
             item = list[i];
@@ -293,6 +285,28 @@ function AppViewModel() {
         return arr;
     }
 
+    /*
+     * @param category_color: can equal any key in CATEGORIES or a valid HTML color
+     */
+    function createTagIcon(category_color){
+        var color = SELECTED_MARKER_COLOR;
+        var category_obj = CATEGORIES[category_color];
+
+        if (category_obj){
+            color = category_obj.color;
+        }
+        console.log(color);
+        var tag = {
+            path: 'M 0,0 24,0, 24,24 12,40, 0,24 z',
+            fillColor: color,
+            fillOpacity: 0.8,
+            scale: 0.75,
+            strokeColor: 'black',
+            strokeWeight: 1
+        };
+
+        return tag;
+    }
 
     if (loadLocalData())
         t.location(localData.location);
