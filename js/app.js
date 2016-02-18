@@ -54,6 +54,10 @@ function AppViewModel() {
     t.locationRadius = ko.observable(0);
     t.currentCategoryLabel = ko.observable('No category has been selected');
     t.currentResults = ko.observableArray();
+    t.APILogo = ko.observable("img/g-logo.png");
+    t.ItemTitle = ko.observable("Item Title");
+    t.ItemInfo = ko.observableArray(['Rating: ***','Address: Abc St.','Phone: 123-456-7890']);
+    t.ItemReviews = ko.observableArray(['Review','Review','Review','Review']);
 
     t.SetInitialLocation = function() {
         var msg = "";
@@ -158,7 +162,15 @@ function AppViewModel() {
     t.CloseViewItem = function() {
         $view_item.toggleClass('hide-me', true);
         $list.toggleClass('hide-me', false);
-    }
+    };
+
+    t.LoadGPlacesInfo = function(){
+        console.log("LoadGPlacesInfo");
+    };
+
+    t.LoadYPInfo = function(){
+        console.log("LoadYPInfo");
+    };
 
     function centerMap(){
         geocoder.geocode({'address':t.location()}, updateGeo);
@@ -258,7 +270,7 @@ function AppViewModel() {
         return function(){
             showResultItem(data);
             toggleResultsPane(true);
-        }
+        };
     }
 
     function toggleMarkers(display, categoryData){

@@ -76,10 +76,31 @@
                 </ul>
             </div>
             <div class="view-item result-item hide-me">
-                <img class="tap"
-                      src="http://placehold.it/48x48"
-                      data-bind="click: CloseViewItem">
-                <h3>View Item</h3>
+                <div class="item-buttons">
+                    <img class="tap"
+                          src="http://placehold.it/48x48"
+                          alt="Click to close this menu"
+                          data-bind="click: CloseViewItem">
+                </div>
+                <div class="logo-buttons">
+                    <img src="img/g-icon.svg"
+                         alt="Location info from Google.com"
+                         data-bind="click: LoadGPlacesInfo"/>
+                    <img src="img/yp-icon.svg"
+                         alt="Location info from YelloPages.com"
+                         data-bind="click: LoadYPInfo"/>
+                </div>
+                <div class="item-content">
+                    <img data-bind="attr: {src: APILogo}" />
+                    <h3 data-bind="ItemTitle"></h3>
+                    <ul data-bind="foreach: ItemInfo">
+                        <li data-bind="text: $data"></li>
+                    </ul>
+                    <h3>Reviews</h3>
+                    <ul data-bind="foreach: ItemReviews">
+                        <li data-bind="text: $data"></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
