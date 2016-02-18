@@ -87,14 +87,14 @@ function AppViewModel() {
 
     };
 
-    var txt_loc_search = $('.txt-loc-search');
-    var loc_search_ctrls = $('.loc-search-ctrls');
+    var $txt_loc_search = $('.txt-loc-search');
+    var $loc_search_ctrls = $('.loc-search-ctrls');
     t.UpdateLocation = function(){
         // TODO: verify the searchRadius value is valid
         // TODO: on UpdateLocation w/ empty query, update locationRadius
         // TODO: adjust map zoom according to locationRadius
 
-        var tmpLoc = txt_loc_search.val();
+        var tmpLoc = $txt_loc_search.val();
         if (tmpLoc){
             t.location(tmpLoc);
             centerMap();
@@ -104,16 +104,16 @@ function AppViewModel() {
             t.locationRadius(localData.radius);
         }
 
-        txt_loc_search.val("");
-        txt_loc_search.blur();
-        loc_search_ctrls.css('display', 'none');
+        $txt_loc_search.val("");
+        $txt_loc_search.blur();
+        $loc_search_ctrls.css('display', 'none');
     };
 
     t.ToggleSearch = function(){
-        loc_search_ctrls.toggle();
+        $loc_search_ctrls.toggle();
 
-        if (loc_search_ctrls.css('display') !== 'none')
-            txt_loc_search.focus();
+        if ($loc_search_ctrls.css('display') !== 'none')
+            $txt_loc_search.focus();
     };
 
     t.CategoryClick = function(koData){
@@ -128,18 +128,17 @@ function AppViewModel() {
         }
     };
 
-    var results = $('.results');
-    var arrow = $('.arrow');
+    var $results = $('.results');
+    var $arrow = $('.arrow');
     var resultsToggle = false;
     t.ArrowClick = function(){
             resultsToggle = !resultsToggle;
-            results.toggleClass('open', resultsToggle);
-            arrow.toggleClass('flip', resultsToggle);
+            $results.toggleClass('open', resultsToggle);
+            $arrow.toggleClass('flip', resultsToggle);
     };
 
-    t.ResultItemClick = function (d){
-        console.log('item clicked!');
-        console.log(d);
+    t.ResultItemClick = function (data){
+        showResultItem(data);
     };
 
     t.NotifyMapIsReady = function() {
@@ -160,6 +159,11 @@ function AppViewModel() {
         });
         places = new google.maps.places.PlacesService(map);
     };
+
+    t.CloseViewItem = function() {
+        $view_item.toggleClass('hide-me', true);
+        $list.toggleClass('hide-me', false);
+    }
 
     function centerMap(){
         geocoder.geocode({'address':t.location()}, updateGeo);
@@ -251,6 +255,13 @@ function AppViewModel() {
                 title: item.name,
                 icon: tag
             });
+            google.maps.event.addListener(item.marker, 'click', markerClick(item));
+        }
+    }
+
+    function markerClick(data){
+        return function(){
+            showResultItem(data);
         }
     }
 
@@ -285,8 +296,15 @@ function AppViewModel() {
         return arr;
     }
 
-    /*
-     * @param category_color: can equal any key in CATEGORIES or a valid HTML color
+    var $view_item = $('.view-item');
+    var $list = $('.list');
+    function showResultItem(data){
+        console.log(data.name);
+        $view_item.toggleClass('hide-me', false);
+        $list.toggleClass('hide-me', true);
+    }
+
+    /* @param category_color: can equal any key in CATEGORIES or a valid HTML color
      */
     function createTagIcon(category_color){
         var color = SELECTED_MARKER_COLOR;

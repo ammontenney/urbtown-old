@@ -69,10 +69,18 @@
         <div class="results">
             <img class="arrow" alt="Open Results" src="img/arrow.svg"
                  data-bind="click: ArrowClick">
-            <h3 data-bind="text: currentCategoryLabel"></h3>
-            <ul data-bind="foreach: currentResults">
-                <li class="result-item" data-bind="text: name+': '+vicinity , click: $parent.ResultItemClick"></li>
-            </ul>
+            <div class="list">
+                <h3 data-bind="text: currentCategoryLabel"></h3>
+                <ul data-bind="foreach: currentResults">
+                    <li class="result-item" data-bind="text: name+': '+vicinity , click: $parent.ResultItemClick"></li>
+                </ul>
+            </div>
+            <div class="view-item result-item hide-me">
+                <img class="tap"
+                      src="http://placehold.it/48x48"
+                      data-bind="click: CloseViewItem">
+                <h3>View Item</h3>
+            </div>
         </div>
 
         <div id="map" class="map"></div>

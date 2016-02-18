@@ -242,7 +242,7 @@ html, body, .container {
 .results {
 	position: relative;
 	float: right;
-	width: 160px;
+	width: 200px;
 	height: 100%;
 	background-color: white;
 	transform: translate(100%,0);
@@ -252,6 +252,19 @@ html, body, .container {
 
 .result-item {
 	outline: 1px solid black !important;
+}
+
+.list, .view-item {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: inherit;
+}
+
+.hide-me {
+	visibility: hidden;
 }
 
 .open {
