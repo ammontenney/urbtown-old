@@ -128,13 +128,8 @@ function AppViewModel() {
         }
     };
 
-    var $results = $('.results');
-    var $arrow = $('.arrow');
-    var resultsToggle = false;
     t.ArrowClick = function(){
-            resultsToggle = !resultsToggle;
-            $results.toggleClass('open', resultsToggle);
-            $arrow.toggleClass('flip', resultsToggle);
+            toggleResultsPane();
     };
 
     t.ResultItemClick = function (data){
@@ -262,6 +257,7 @@ function AppViewModel() {
     function markerClick(data){
         return function(){
             showResultItem(data);
+            toggleResultsPane(true);
         }
     }
 
@@ -294,6 +290,24 @@ function AppViewModel() {
         }
 
         return arr;
+    }
+
+    /* @param display: pass t/f to specify to open/close results pane
+     * if parameter is ommited the  results pane will toggle open/close
+     */
+    var $results = $('.results');
+    var $arrow = $('.arrow');
+    var resultsToggle = false;
+    function toggleResultsPane(display){
+        if (display !== undefined) {
+            resultsToggle = display;
+        }
+        else {
+            resultsToggle = !resultsToggle;
+        }
+
+        $results.toggleClass('open', resultsToggle);
+        $arrow.toggleClass('flip', resultsToggle);
     }
 
     var $view_item = $('.view-item');
