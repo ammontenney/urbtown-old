@@ -1,5 +1,7 @@
 
 function AppViewModel() {
+    var t = this;
+
     var map = {};
     var geocoder = {};
     var places = {};
@@ -46,18 +48,29 @@ function AppViewModel() {
     };
 
 
-    var t = this;
+    var APILIST = {
+        GPlaces: {name:'Google Places',
+                 icon: 'img/g-icon.png',
+                 logo: 'img/g-logo.png',
+                 loader: gpLoader },
+        YP: {name:'YellowPages',
+            icon: 'img/yp-icon.svg',
+            logo: 'img/yp-logo.svg',
+            loader: ypLoader },
+    };
+    t.selectedAPI = ko.observable('GPlaces');
+
     t.radiusValues = ko.observableArray(RADIUS_VALS);
-    t.categories = ko.observableArray( categoriesToArray() );
+    t.categories = ko.observableArray( ObjectToArray(CATEGORIES) );
+    t.apiList = ko.observableArray( ObjectToArray(APILIST) );
     t.welcomeError = ko.observable("&nbsp");
     t.location = ko.observable();
     t.locationRadius = ko.observable(0);
     t.currentCategoryLabel = ko.observable('No category has been selected');
     t.currentResults = ko.observableArray();
-    t.APILogo = ko.observable("img/g-logo.png");
-    t.ItemTitle = ko.observable("Item Title");
-    t.ItemInfo = ko.observableArray(['Rating: ***','Address: Abc St.','Phone: 123-456-7890']);
-    t.ItemReviews = ko.observableArray(['Review','Review','Review','Review']);
+    // t.ItemTitle = ko.observable("Item Title");
+    // t.ItemInfo = ko.observableArray(['Rating: ***','Address: Abc St.','Phone: 123-456-7890']);
+    // t.ItemReviews = ko.observableArray(['Review','Review','Review','Review']);
 
     t.SetInitialLocation = function() {
         var msg = "";
@@ -164,13 +177,9 @@ function AppViewModel() {
         $list.toggleClass('hide-me', false);
     };
 
-    t.LoadGPlacesInfo = function(){
-        console.log("LoadGPlacesInfo");
-    };
-
-    t.LoadYPInfo = function(){
-        console.log("LoadYPInfo");
-    };
+    t.SelectedAPILogo = ko.computed(function(){
+        return APILIST[t.selectedAPI()].logo;
+    });
 
     function centerMap(){
         geocoder.geocode({'address':t.location()}, updateGeo);
@@ -293,12 +302,12 @@ function AppViewModel() {
         placeSearchData = {};
     }
 
-    function categoriesToArray(){
-        var keys = Object.keys(CATEGORIES);
+    function ObjectToArray(obj){
+        var keys = Object.keys(obj);
         var arr = [];
 
         for (var i=0; i<keys.length; i++){
-            arr.push(CATEGORIES[ keys[i] ]);
+            arr.push(obj[ keys[i] ]);
         }
 
         return arr;
@@ -325,9 +334,16 @@ function AppViewModel() {
     var $view_item = $('.view-item');
     var $list = $('.list');
     function showResultItem(data){
-        console.log(data.name);
         $view_item.toggleClass('hide-me', false);
         $list.toggleClass('hide-me', true);
+    }
+
+    function gpLoader(){
+        t.selectedAPI('GPlaces');
+    }
+
+    function ypLoader(){
+        t.selectedAPI('YP');
     }
 
     /* @param category_color: can equal any key in CATEGORIES or a valid HTML color
@@ -339,7 +355,7 @@ function AppViewModel() {
         if (category_obj){
             color = category_obj.color;
         }
-        console.log(color);
+
         var tag = {
             path: 'M 0,0 24,0, 24,24 12,40, 0,24 z',
             fillColor: color,

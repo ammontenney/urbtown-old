@@ -270,3 +270,8 @@ html, body, .container {
 .open {
 	transform: translate(0,0);
 }
+
+/*.logo-buttons img {
+	width: 40px;
+	height: 40px;
+}*/

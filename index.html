@@ -83,23 +83,23 @@
                           data-bind="click: CloseViewItem">
                 </div>
                 <div class="logo-buttons">
-                    <img src="img/g-icon.svg"
-                         alt="Location info from Google.com"
-                         data-bind="click: LoadGPlacesInfo"/>
-                    <img src="img/yp-icon.svg"
-                         alt="Location info from YelloPages.com"
-                         data-bind="click: LoadYPInfo"/>
+                    <!-- ko foreach: apiList -->
+                    <img data-bind="attr: {src: icon, alt: name}, click: loader"
+                         class="tap"/>
+                    <!-- /ko -->
+                    <br />
+                    <img data-bind="attr: {src: SelectedAPILogo}"/>
                 </div>
                 <div class="item-content">
-                    <img data-bind="attr: {src: APILogo}" />
-                    <h3 data-bind="ItemTitle"></h3>
+
+                    <!-- <h3 data-bind="ItemTitle"></h3>
                     <ul data-bind="foreach: ItemInfo">
                         <li data-bind="text: $data"></li>
                     </ul>
                     <h3>Reviews</h3>
                     <ul data-bind="foreach: ItemReviews">
                         <li data-bind="text: $data"></li>
-                    </ul>
+                    </ul> -->
                 </div>
             </div>
         </div>
