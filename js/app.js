@@ -6,14 +6,11 @@ function AppViewModel() {
     var geocoder = {};
     var places = {};
     var mapReady = false;
-    var localData = {};
-    localData.radius = 5;
+    var resultsToggle = false;
+    var localData = {radius: 5};
     var placeSearchData = {};
-
     var SELECTED_MARKER_COLOR = 'green';
-
     var RADIUS_VALS = [5,10,15,20,25];
-
     var CATEGORIES = {
         Education:  {title:'Education',
                     icon:'img/education.svg',
@@ -46,8 +43,6 @@ function AppViewModel() {
                     api:'',
                     types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']}
     };
-
-
     var APILIST = {
         GPlaces: {name:'Google Places',
                  icon: 'img/g-icon.png',
@@ -58,8 +53,15 @@ function AppViewModel() {
             logo: 'img/yp-logo.svg',
             loader: ypLoader },
     };
-    t.selectedAPI = ko.observable('GPlaces');
 
+    var $txt_loc_search = $('.txt-loc-search');
+    var $loc_search_ctrls = $('.loc-search-ctrls');
+    var $results = $('.results');
+    var $arrow = $('.arrow');
+    var $view_item = $('.view-item');
+    var $list = $('.list');
+
+    t.selectedAPI = ko.observable('GPlaces');
     t.radiusValues = ko.observableArray(RADIUS_VALS);
     t.categories = ko.observableArray( ObjectToArray(CATEGORIES) );
     t.apiList = ko.observableArray( ObjectToArray(APILIST) );
@@ -68,9 +70,9 @@ function AppViewModel() {
     t.locationRadius = ko.observable(0);
     t.currentCategoryLabel = ko.observable('No category has been selected');
     t.currentResults = ko.observableArray();
-    // t.ItemTitle = ko.observable("Item Title");
-    // t.ItemInfo = ko.observableArray(['Rating: ***','Address: Abc St.','Phone: 123-456-7890']);
-    // t.ItemReviews = ko.observableArray(['Review','Review','Review','Review']);
+    t.SelectedAPILogo = ko.computed(function(){
+        return APILIST[t.selectedAPI()].logo;
+    });
 
     t.SetInitialLocation = function() {
         var msg = "";
@@ -104,8 +106,6 @@ function AppViewModel() {
 
     };
 
-    var $txt_loc_search = $('.txt-loc-search');
-    var $loc_search_ctrls = $('.loc-search-ctrls');
     t.UpdateLocation = function(){
         // TODO: verify the searchRadius value is valid
         // TODO: on UpdateLocation w/ empty query, update locationRadius
@@ -176,10 +176,6 @@ function AppViewModel() {
         $view_item.toggleClass('hide-me', true);
         $list.toggleClass('hide-me', false);
     };
-
-    t.SelectedAPILogo = ko.computed(function(){
-        return APILIST[t.selectedAPI()].logo;
-    });
 
     function centerMap(){
         geocoder.geocode({'address':t.location()}, updateGeo);
@@ -316,9 +312,6 @@ function AppViewModel() {
     /* @param display: pass t/f to specify to open/close results pane
      * if parameter is ommited the  results pane will toggle open/close
      */
-    var $results = $('.results');
-    var $arrow = $('.arrow');
-    var resultsToggle = false;
     function toggleResultsPane(display){
         if (display !== undefined) {
             resultsToggle = display;
@@ -331,8 +324,6 @@ function AppViewModel() {
         $arrow.toggleClass('flip', resultsToggle);
     }
 
-    var $view_item = $('.view-item');
-    var $list = $('.list');
     function showResultItem(data){
         $view_item.toggleClass('hide-me', false);
         $list.toggleClass('hide-me', true);
