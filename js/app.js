@@ -9,6 +9,7 @@ function AppViewModel() {
     var resultsToggle = false;
     var localData = {radius: 5};
     var placeSearchData = {};
+    var selectedItem = null;
     var SELECTED_MARKER_COLOR = 'green';
     var RADIUS_VALS = [5,10,15,20,25];
     var CATEGORIES = {
@@ -150,8 +151,18 @@ function AppViewModel() {
     };
 
     t.ResultItemClick = function (data){
-        showResultItem(data);
+        if (selectedItem !== null && selectedItem.place_id === data.place_id){
+            showResultItem(data);
+        }
+        else {
+            setSelectedItem(data);
+        }
     };
+
+    t.ResultItemMouseMove = function(data){
+        setSelectedItem(data);
+    };
+
 
     t.NotifyMapIsReady = function() {
         mapReady = true;
@@ -242,8 +253,17 @@ function AppViewModel() {
             placeSearchData[category] = results;
             addMarkers(category);
             switchCategory(category);
-
+            assignCategoryToResults(category, results);
         });
+    }
+
+    function assignCategoryToResults(category, results){
+        var item = {};
+        for (var i=0; i<results.length; i++)
+        {
+            item = results[i];
+            item.category = category;
+        }
     }
 
     function switchCategory(category){
@@ -273,6 +293,7 @@ function AppViewModel() {
 
     function markerClick(data){
         return function(){
+            setSelectedItem(data);
             showResultItem(data);
             toggleResultsPane(true);
         };
@@ -327,10 +348,19 @@ function AppViewModel() {
     function showResultItem(data){
         $view_item.toggleClass('hide-me', false);
         $list.toggleClass('hide-me', true);
+
+        // we need to set the selectedAPI to 'GPlaces' because we use it to get
+        // the data from the other 3rd party services
+        t.selectedAPI('GPlaces');
+
+        var api = t.selectedAPI();
+        var tmpLoader = APILIST[api].loader;
+        tmpLoader();
     }
 
     function gpLoader(){
         t.selectedAPI('GPlaces');
+
     }
 
     function ypLoader(){
@@ -340,7 +370,7 @@ function AppViewModel() {
     /* @param category_color: can equal any key in CATEGORIES or a valid HTML color
      */
     function createTagIcon(category_color){
-        var color = SELECTED_MARKER_COLOR;
+        var color = category_color;
         var category_obj = CATEGORIES[category_color];
 
         if (category_obj){
@@ -353,10 +383,31 @@ function AppViewModel() {
             fillOpacity: 0.8,
             scale: 0.75,
             strokeColor: 'black',
-            strokeWeight: 1
+            strokeWeight: 1,
         };
-
         return tag;
+    }
+
+    function setSelectedItem(data){
+        // de-select the current item
+        if (selectedItem !== null){
+            var selectedElem = $('.'+selectedItem.place_id);
+            var normalTag = createTagIcon(selectedItem.category);
+
+            selectedItem.marker.setIcon(normalTag);
+            selectedItem.marker.setZIndex(google.maps.Marker.MAX_ZINDEX-1);
+            selectedElem.toggleClass('selected-item', false);
+        }
+
+        // select the new item
+        var item = data;
+        var itemElem = $('.'+item.place_id);
+        var selectedTag = createTagIcon(SELECTED_MARKER_COLOR);
+        item.marker.setIcon(selectedTag);
+        item.marker.setZIndex(google.maps.Marker.MAX_ZINDEX+1);
+        itemElem.toggleClass('selected-item', true);
+
+        selectedItem = item;
     }
 
     if (loadLocalData())
