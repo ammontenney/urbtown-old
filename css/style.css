@@ -250,8 +250,12 @@ html, body, .container {
 	transition: transform 0.3s ease
 }
 
-.result-item {
+.has-border {
 	outline: 1px solid black !important;
+}
+
+.selected-item {
+	outline: 3px solid blue !important;
 }
 
 .list, .view-item {
