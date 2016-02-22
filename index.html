@@ -72,10 +72,10 @@
             <div class="list">
                 <h3 data-bind="text: currentCategoryLabel"></h3>
                 <ul data-bind="foreach: currentResults">
-                    <li class="result-item" data-bind="text: name+': '+vicinity , click: $parent.ResultItemClick"></li>
+                    <li class="has-border" data-bind="text: name+': '+vicinity , click: $parent.ResultItemClick, css: place_id, event: {mouseover: $parent.ResultItemMouseMove}"></li>
                 </ul>
             </div>
-            <div class="view-item result-item hide-me">
+            <div class="view-item has-border hide-me">
                 <div class="item-buttons">
                     <img class="tap"
                           src="http://placehold.it/48x48"
