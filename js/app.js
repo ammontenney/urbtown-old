@@ -163,7 +163,6 @@ function AppViewModel() {
         setSelectedItem(data);
     };
 
-
     t.NotifyMapIsReady = function() {
         mapReady = true;
         // these coordinates default to the center of the USA
@@ -354,13 +353,43 @@ function AppViewModel() {
         t.selectedAPI('GPlaces');
 
         var api = t.selectedAPI();
-        var tmpLoader = APILIST[api].loader;
-        tmpLoader();
+        APILIST[api].loader();
     }
 
     function gpLoader(){
         t.selectedAPI('GPlaces');
 
+        var request = {placeId: selectedItem.place_id};
+        places.getDetails(request, function(details, status){
+            var $div = $('<div>');
+            $div.append( $('<h2>').html(details.name) );
+            $div.append('<h3>Rating:</h3>');
+            $div.append(details.rating+'&nbsp');
+
+            var $website = $('<a>', {href: details.website, target:'_blank'}).append('Website');
+            $div.append( $('<h3>').append($website) );
+            $div.append('<h3>Phone</h3>');
+            $div.append(details.formatted_phone_number);
+            $div.append('<h3>Address</h3>');
+            $div.append(details.formatted_address);
+
+            $('.item-content').html($div);
+
+            /*
+            formatted_address
+            formatted_phone_number
+            name
+            rating
+            reviews
+                aspects[]
+                    type
+                    rating
+                author_name
+                rating
+                text
+            website
+            */
+        });
     }
 
     function ypLoader(){
