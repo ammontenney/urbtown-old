@@ -265,6 +265,7 @@ html, body, .container {
 	height: 100%;
 	width: 100%;
 	z-index: inherit;
+	overflow-y: scroll;
 }
 
 .hide-me {
@@ -273,6 +274,10 @@ html, body, .container {
 
 .open {
 	transform: translate(0,0);
+}
+
+.item-content {
+
 }
 
 /*.logo-buttons img {

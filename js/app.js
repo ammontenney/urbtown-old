@@ -361,18 +361,43 @@ function AppViewModel() {
 
         var request = {placeId: selectedItem.place_id};
         places.getDetails(request, function(details, status){
-            var $div = $('<div>');
-            $div.append( $('<h2>').html(details.name) );
-            $div.append('<h3>Rating:</h3>');
-            $div.append(details.rating+'&nbsp');
+            var $div = $('<div class="place-info">');
+            $div.append( $('<h2> class="place-name"').text(details.name) );
 
-            var $website = $('<a>', {href: details.website, target:'_blank'}).append('Website');
-            $div.append( $('<h3>').append($website) );
-            $div.append('<h3>Phone</h3>');
-            $div.append(details.formatted_phone_number);
-            $div.append('<h3>Address</h3>');
-            $div.append(details.formatted_address);
+            var $place_rating = $('<p class="place-rating">');
+            $place_rating.append( $('<span class="place-label">').text('Rating: ') );
+            $place_rating.append( details.rating );
+            $div.append($place_rating);
 
+            var $place_phone = $('<p class="place-phone">');
+            $place_phone.append( $('<span class="place-label">').text('Phone: ') );
+            $place_phone.append( details.formatted_phone_number );
+            $div.append($place_phone);
+
+            var $place_website = $('<a>', {href: details.website, target:'_blank', class:'place-label'}).text('Website');
+            $div.append( $('<p class="place-website">').append($place_website) );
+
+            var $place_address = $('<p class="place-address">');
+            $place_address.append( $('<span class="place-label">').text('Address: ') );
+            $place_address.append( $('<br>') );
+            $place_address.append( details.formatted_address );
+            $div.append($place_address);
+
+            $div.append('<h3>Reviews</h3>');
+            var item;
+            var $review;
+            for (var i=0; i<details.reviews.length; i++){
+                item = details.reviews[i];
+                $review = $('<div>');
+                $review.append( $('<span>').append(item.author_name) );
+                $review.append(' - ');
+                $review.append( $('<span>').append(item.rating) );
+                $review.append('<br>');
+                $review.append( $('<span>').append(item.text) );
+                $div.append($review);
+            }
+
+            console.log(details);
             $('.item-content').html($div);
 
             /*
