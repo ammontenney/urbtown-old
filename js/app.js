@@ -361,6 +361,7 @@ function AppViewModel() {
 
         var request = {placeId: selectedItem.place_id};
         places.getDetails(request, function(details, status){
+            console.log(details);
             var $div = $('<div class="place-info">');
             $div.append( $('<h2> class="place-name"').text(details.name) );
 
@@ -377,6 +378,9 @@ function AppViewModel() {
             var $place_website = $('<a>', {href: details.website, target:'_blank', class:'place-label'}).text('Website');
             $div.append( $('<p class="place-website">').append($place_website) );
 
+            var $place_url = $('<a>', {href: details.url, target:'_blank', class:'place-label'}).text('View on Google Maps');
+            $div.append( $('<p class="place-url">').append($place_url) );
+
             var $place_address = $('<p class="place-address">');
             $place_address.append( $('<span class="place-label">').text('Address: ') );
             $place_address.append( $('<br>') );
@@ -384,36 +388,27 @@ function AppViewModel() {
             $div.append($place_address);
 
             $div.append('<h3>Reviews</h3>');
+
+            if (!details.reviews){
+                $div.append( $('<p class="no-reviews">').text('No reviews available') );
+                $('.item-content').html($div);
+                return;
+            }
+
             var item;
             var $review;
             for (var i=0; i<details.reviews.length; i++){
                 item = details.reviews[i];
-                $review = $('<div>');
-                $review.append( $('<span>').append(item.author_name) );
+                $review = $('<p class="review">');
+                $review.append( $('<span class="review-author">').append(item.author_name) );
                 $review.append(' - ');
-                $review.append( $('<span>').append(item.rating) );
+                $review.append( $('<span class="review-rating">').append(item.rating) );
                 $review.append('<br>');
-                $review.append( $('<span>').append(item.text) );
+                $review.append( $('<span class="review-text">').append(item.text) );
                 $div.append($review);
             }
 
-            console.log(details);
             $('.item-content').html($div);
-
-            /*
-            formatted_address
-            formatted_phone_number
-            name
-            rating
-            reviews
-                aspects[]
-                    type
-                    rating
-                author_name
-                rating
-                text
-            website
-            */
         });
     }
 
