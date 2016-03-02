@@ -416,6 +416,35 @@ function AppViewModel() {
         t.selectedAPI('YP');
     }
 
+    var HTMLGenerator = function (){
+        var me = this;
+        var $html = $('<div class="place-info">');
+
+        me.addTitle = function(content, h_level){
+            $html.append( $('<h'+h_level+' class="place-title">').text(content) );
+        };
+
+        me.addEntry = function(label, content, insert_break){
+            var $entry = $('<p class="place-entry">');
+            $entry.append( $('<span class="place-label">').text(label) );
+            if (insert_break)
+                $entry.append('<br>');
+            $entry.append( content );
+            $html.append($entry);
+        };
+
+        me.generateLink = function(label, url){
+            var $link = $('<a>', {href: url, target:'_blank'}).text(label);
+            return $link;
+        };
+
+        me.generateStars = function(num){
+            // TODO replace number w/ actual star icon
+            return num;
+        };
+
+    };
+
     /* @param category_color: can equal any key in CATEGORIES or a valid HTML color
      */
     function createTagIcon(category_color){
