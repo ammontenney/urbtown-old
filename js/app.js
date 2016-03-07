@@ -433,6 +433,20 @@ function AppViewModel() {
             $html.append($entry);
         };
 
+        me.addList = function(base_class, list, keys){
+            var list_item;
+            var $item_html;
+            var key;
+            for (var i=0; i<list.length; i++){
+                $item_html = $('<p class="'+base_class+'">');
+                for (var j=0; j<keys.length; j++){
+                    key = keys[j];
+                    $item_html.append( $('<span class="'+base_class+'-'+key+'">').append(list[key]) );
+                }
+                $HTML.append($item_html);
+            }
+        };
+
         me.generateLink = function(label, url){
             var $link = $('<a>', {href: url, target:'_blank'}).text(label);
             return $link;
