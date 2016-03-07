@@ -362,53 +362,24 @@ function AppViewModel() {
         var request = {placeId: selectedItem.place_id};
         places.getDetails(request, function(details, status){
             console.log(details);
-            var $div = $('<div class="place-info">');
-            $div.append( $('<h2> class="place-name"').text(details.name) );
 
-            var $place_rating = $('<p class="place-rating">');
-            $place_rating.append( $('<span class="place-label">').text('Rating: ') );
-            $place_rating.append( details.rating );
-            $div.append($place_rating);
+            var gen = new HTMLGenerator();
+            gen.addTitle ( details.name, 2 );
+            gen.addEntry ( 'Rating: ', gen.generateStars(details.rating), false );
+            gen.addEntry ( 'Phone: ', details.formatted_phone_number, false );
+            gen.addEntry ( 'Link: ', gen.generateLink(details.name, details.website), true );
+            gen.addEntry ( 'Link: ', gen.generateLink('View on Google Maps', details.url), true );
+            gen.addEntry ( 'Address: ', details.formatted_address, true );
+            gen.addTitle ( 'Reviews', 3 );
 
-            var $place_phone = $('<p class="place-phone">');
-            $place_phone.append( $('<span class="place-label">').text('Phone: ') );
-            $place_phone.append( details.formatted_phone_number );
-            $div.append($place_phone);
-
-            var $place_website = $('<a>', {href: details.website, target:'_blank', class:'place-label'}).text('Website');
-            $div.append( $('<p class="place-website">').append($place_website) );
-
-            var $place_url = $('<a>', {href: details.url, target:'_blank', class:'place-label'}).text('View on Google Maps');
-            $div.append( $('<p class="place-url">').append($place_url) );
-
-            var $place_address = $('<p class="place-address">');
-            $place_address.append( $('<span class="place-label">').text('Address: ') );
-            $place_address.append( $('<br>') );
-            $place_address.append( details.formatted_address );
-            $div.append($place_address);
-
-            $div.append('<h3>Reviews</h3>');
-
-            if (!details.reviews){
-                $div.append( $('<p class="no-reviews">').text('No reviews available') );
-                $('.item-content').html($div);
-                return;
+            if (details.reviews){
+                gen.addList ( 'review', details.reviews, ['author_name', 'rating', 'text'] );
+            }
+            else {
+                gen.addEntry( '', 'No reviews available', false );
             }
 
-            var item;
-            var $review;
-            for (var i=0; i<details.reviews.length; i++){
-                item = details.reviews[i];
-                $review = $('<p class="review">');
-                $review.append( $('<span class="review-author">').append(item.author_name) );
-                $review.append(' - ');
-                $review.append( $('<span class="review-rating">').append(item.rating) );
-                $review.append('<br>');
-                $review.append( $('<span class="review-text">').append(item.text) );
-                $div.append($review);
-            }
-
-            $('.item-content').html($div);
+            $('.item-content').html( gen.getHTML() );
         });
     }
 
@@ -419,6 +390,10 @@ function AppViewModel() {
     var HTMLGenerator = function (){
         var me = this;
         var $html = $('<div class="place-info">');
+
+        me.getHTML = function(){
+            return $html;
+        };
 
         me.addTitle = function(content, h_level){
             $html.append( $('<h'+h_level+' class="place-title">').text(content) );
@@ -441,9 +416,10 @@ function AppViewModel() {
                 $item_html = $('<p class="'+base_class+'">');
                 for (var j=0; j<keys.length; j++){
                     key = keys[j];
-                    $item_html.append( $('<span class="'+base_class+'-'+key+'">').append(list[key]) );
+                    $item_html.append( $('<span class="'+base_class+'-'+key+'">').append(list[i][key]) );
+                    console.log(list);
                 }
-                $HTML.append($item_html);
+                $html.append($item_html);
             }
         };
 
