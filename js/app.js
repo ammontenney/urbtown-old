@@ -385,6 +385,17 @@ function AppViewModel() {
 
     function ypLoader(){
         t.selectedAPI('YP');
+        var loc = selectedItem.geometry.location.lat() + ':' + selectedItem.geometry.location.lng();
+
+        var url = new APIUrl();
+        url.setEndPoint('http://api2.yp.com/listings/v1/search');
+        url.addParam('key', 'qw1921yj10');
+        url.addParam('term', selectedItem.name);
+        url.addParam('format', 'json');
+        url.addParam('listingcount', '5');
+        url.addParam('searchloc', loc);
+
+        console.log(url.getURL());
     }
 
     var HTMLGenerator = function (){
@@ -416,8 +427,8 @@ function AppViewModel() {
                 $item_html = $('<p class="'+base_class+'">');
                 for (var j=0; j<keys.length; j++){
                     key = keys[j];
+                    if (j!==0) $item_html.append('<br>');
                     $item_html.append( $('<span class="'+base_class+'-'+key+'">').append(list[i][key]) );
-                    console.log(list);
                 }
                 $html.append($item_html);
             }
@@ -433,6 +444,32 @@ function AppViewModel() {
             return num;
         };
 
+    };
+
+    var APIUrl = function(){
+        var me = this;
+        var base_url = '';
+        var params = [];
+
+        me.setEndPoint = function(url){
+            base_url = encodeURI(url);
+        };
+
+        me.addParam = function(key, val){
+            params.push(encodeURI(key));
+            params.push(encodeURI(val));
+        };
+
+        me.getURL = function(){
+            var tmpURL = base_url+'?';
+
+            for (var i=0; i<params.length; i+=2){
+                key = params[i];
+                val = params[i+1];
+                tmpURL = tmpURL + '&' + key + '=' + val;
+            }
+            return tmpURL;
+        };
     };
 
     /* @param category_color: can equal any key in CATEGORIES or a valid HTML color
