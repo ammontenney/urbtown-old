@@ -394,8 +394,29 @@ function AppViewModel() {
         url.addParam('format', 'json');
         url.addParam('listingcount', '5');
         url.addParam('searchloc', loc);
-
         console.log(url.getURL());
+
+        var timeout = setTimeout(function(){
+            console.log('AJAX request to yp.com failed.');
+        }, 6000);
+        $.ajax({
+            url: 'http://api2.yp.com/listings/v1/search',
+            dataType: 'jsonp',
+            data: { key: 'qw1921yj10',
+                    term: selectedItem.name,
+                    format: 'json',
+                    listingcount: '5',
+                    searchloc: loc},
+            success: function(data){
+                clearTimeout(timeout);
+                console.log('ajax results');
+                console.log(data);
+            }
+        });
+
+        var gen = new HTMLGenerator();
+
+        $('.item-content').html( gen.getHTML() );
     }
 
     var HTMLGenerator = function (){
