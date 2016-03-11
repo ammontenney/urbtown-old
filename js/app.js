@@ -390,6 +390,7 @@ function AppViewModel() {
         var timeout = setTimeout(function(){
             console.log('AJAX request to yp.com failed.');
         }, 6000);
+
         $.ajax({
             url: 'http://api2.yp.com/listings/v1/search',
             dataType: 'jsonp',
@@ -398,16 +399,34 @@ function AppViewModel() {
                     format: 'json',
                     listingcount: '5',
                     searchloc: loc},
-            success: function(data){
-                clearTimeout(timeout);
-                console.log('ajax results');
-                console.log(data);
-            }
+            success: displayYPResults
         });
 
-        var gen = new HTMLGenerator();
+        function displayYPResults(data){
+            clearTimeout(timeout);
+            console.log('ajax results');
+            console.log(data);
 
-        $('.item-content').html( gen.getHTML() );
+            var listing = data.searchResult.searchListings.searchListing[0];
+            var name = listing.businessName;
+            var phone = listing.phone;
+            var rating = listing.averageRating;
+            var ypLink = listing.moreInfoURL;
+            var website = listing.websiteURL;
+            var address = listing.street + ', ' +
+                          listing.city + ', ' +
+                          listing.state + ' ' + listing.zip;
+
+            var gen = new HTMLGenerator();
+            gen.addTitle(name);
+            gen.addEntry('Rating: ', gen.generateStars(rating), false);
+            gen.addEntry('Phone: ', phone, false);
+            gen.addEntry('Link: ', gen.generateLink(name, website), true);
+            gen.addEntry('Link: ', gen.generateLink('View listing on yp.com', ypLink), true);
+            gen.addEntry('Address: ', address, true);
+
+            $('.item-content').html( gen.getHTML() );
+        }
     }
 
     var HTMLGenerator = function (){
