@@ -62,8 +62,10 @@ function AppViewModel() {
     var $view_item = $('.view-item');
     var $list = $('.list');
 
+    // the selected API in the GUI defaults to Google Places
     t.selectedAPI = ko.observable('GPlaces');
     t.radiusValues = ko.observableArray(RADIUS_VALS);
+    // These are the categories that are displayed on the left bar of the screen
     t.categories = ko.observableArray( ObjectToArray(CATEGORIES) );
     t.apiList = ko.observableArray( ObjectToArray(APILIST) );
     t.welcomeError = ko.observable("&nbsp");
@@ -356,6 +358,8 @@ function AppViewModel() {
         APILIST[api].loader();
     }
 
+    // this function loads data from the Google Places API and outputs HTML
+    // formatted to that data
     function gpLoader(){
         t.selectedAPI('GPlaces');
 
@@ -383,6 +387,8 @@ function AppViewModel() {
         });
     }
 
+    // this function loads data from the YellowPages API and outputs HTML
+    // formatted to that data
     function ypLoader(){
         t.selectedAPI('YP');
         var loc = selectedItem.geometry.location.lat() + ':' + selectedItem.geometry.location.lng();
@@ -429,6 +435,9 @@ function AppViewModel() {
         }
     }
 
+    // All of my 3rd party loader functions format the HTML similarly with only
+    // the content differing. This class/function makes is easier and quicker to
+    // genreate consistently formatted html
     var HTMLGenerator = function (){
         var me = this;
         var $html = $('<div class="place-info">');
