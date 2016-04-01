@@ -1,5 +1,5 @@
 /**
-    UrbTown is an exploration too for those going to a new place
+    UrbTown is an exploration tool for those going to a new place
 
     This app utilizes Goople Maps API, Knockout.js, and jquery
     Everything starts from the class 'AppViewModel' when it is instantiated and
@@ -418,9 +418,18 @@ function AppViewModel() {
         });
 
         function displayYPResults(data){
+            var gen = new HTMLGenerator();
             clearTimeout(timeout);
+
             console.log('ajax results');
             console.log(data);
+
+            if (data.searchResult.searchListings == "")
+            {
+                gen.addEntry('', 'YP.com did not return any results for this location', false);
+                $('.item-content').html( gen.getHTML() );
+                return;
+            }
 
             var listing = data.searchResult.searchListings.searchListing[0];
             var name = listing.businessName;
@@ -432,7 +441,6 @@ function AppViewModel() {
                           listing.city + ', ' +
                           listing.state + ' ' + listing.zip;
 
-            var gen = new HTMLGenerator();
             gen.addTitle(name);
             gen.addEntry('Rating: ', gen.generateStars(rating), false);
             gen.addEntry('Phone: ', phone, false);
