@@ -1,11 +1,18 @@
+/**
+    UrbTown is an exploration too for those going to a new place
 
+    This app utilizes Goople Maps API, Knockout.js, and jquery
+    Everything starts from the class 'AppViewModel' when it is instantiated and
+    bound to knockout
+
+ */
 function AppViewModel() {
     var t = this;
 
-    var map = {};
-    var geocoder = {};
-    var places = {};
-    var mapReady = false;
+    var map = {}; // stores an instance of Google Maps
+    var geocoder = {}; // used w/ GMaps to do a reverse lat-lng lookup on an address
+    var places = {}; // used w/ GMaps to retrieve location info and reviews
+    var mapReady = false; // track w/ the map has been initialized
     var resultsToggle = false;
     var localData = {radius: 5};
     var placeSearchData = {};
@@ -166,11 +173,13 @@ function AppViewModel() {
     };
 
     t.NotifyMapIsReady = function() {
-        mapReady = true;
+        mapReady = true; // indicate that the map api has been loaded
+
         // these coordinates default to the center of the USA
         var myLat = 37.2739675;
         var myLng = -104.678212;
 
+        //
         if (!$.isEmptyObject(localData)){
             myLat = localData.lat;
             myLng = localData.lng;
