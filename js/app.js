@@ -361,7 +361,7 @@ function AppViewModel() {
 
         // we need to set the selectedAPI to 'GPlaces' because we use it to get
         // the data from the other 3rd party services
-        t.selectedAPI('GPlaces');
+        // t.selectedAPI('GPlaces');
 
         var api = t.selectedAPI();
         APILIST[api].loader();
@@ -374,6 +374,7 @@ function AppViewModel() {
 
         var request = {placeId: selectedItem.place_id};
         places.getDetails(request, function(details, status){
+            console.log('GPLoader results:');
             console.log(details);
 
             var gen = new HTMLGenerator();
@@ -401,9 +402,19 @@ function AppViewModel() {
     function ypLoader(){
         t.selectedAPI('YP');
         var loc = selectedItem.geometry.location.lat() + ':' + selectedItem.geometry.location.lng();
+        var listing;
+        var searchData;
+        var reviewData;
+        var gen = new HTMLGenerator();
+
+        gen.addEntry('', 'Contacting YP.com ...', false);
+        gen.display('.item-content');
+        gen.reset();
 
         var timeout = setTimeout(function(){
-            console.log('AJAX request to yp.com failed.');
+            gen.addEntry('', 'YP.com is unavailable. Please try again.', false);
+            gen.display('.item-content');
+            gen.reset();
         }, 6000);
 
         $.ajax({
@@ -414,24 +425,60 @@ function AppViewModel() {
                     format: 'json',
                     listingcount: '5',
                     searchloc: loc},
-            success: displayYPResults
+            success: processSearchResults
         });
 
-        function displayYPResults(data){
-            var gen = new HTMLGenerator();
+        function processSearchResults(data){
+            console.log('YP Results:');
+            console.log(data);
             clearTimeout(timeout);
 
-            console.log('ajax results');
-            console.log(data);
+            searchData = data.searchResult;
 
-            if (data.searchResult.searchListings == "")
-            {
+            if (searchData.metaProperties.listingCount == 0){
                 gen.addEntry('', 'YP.com did not return any results for this location', false);
-                $('.item-content').html( gen.getHTML() );
+                gen.display('.item-content');
                 return;
             }
 
-            var listing = data.searchResult.searchListings.searchListing[0];
+            listing = searchData.searchListings.searchListing[0];
+            displayYPInfo();
+
+            // notify the user if the ajax request from yp.com does not work
+            timeout = setTimeout(function(){
+                console.log('YP.com is unavailable. Please try again.');
+            }, 6000);
+
+            // Request the Review data from YP.com
+            $.ajax({
+                url: 'http://api2.yp.com/listings/v1/reviews',
+                dataType: 'jsonp',
+                data: { key: 'qw1921yj10',
+                        format: 'json',
+                        listingid: listing.listingId},
+                success: processReviews
+            });
+        }
+
+        function processReviews(data){
+            console.log('YP Reviews:');
+            console.log(data);
+            clearTimeout(timeout);
+
+            reviewData = data.ratingsAndReviewsResult;
+
+            if (reviewData.metaProperties.reviewCount == 0){
+                return;
+            }
+
+            var reviews = reviewData.reviews.review;
+            console.log(reviews);
+            gen.addTitle('Reviews');
+            gen.addList ( 'reviews', reviews, ['reviewer', 'rating', 'reviewSubject', 'reviewBody'] );
+            gen.display('.item-content');
+        }
+
+        function displayYPInfo(){
             var name = listing.businessName;
             var phone = listing.phone;
             var rating = listing.averageRating;
@@ -447,8 +494,7 @@ function AppViewModel() {
             gen.addEntry('Link: ', gen.generateLink(name, website), true);
             gen.addEntry('Link: ', gen.generateLink('View listing on yp.com', ypLink), true);
             gen.addEntry('Address: ', address, true);
-
-            $('.item-content').html( gen.getHTML() );
+            gen.display('.item-content');
         }
     }
 
@@ -499,6 +545,14 @@ function AppViewModel() {
         me.generateStars = function(num){
             // TODO replace number w/ actual star icon
             return num;
+        };
+
+        me.display = function(selector){
+            $(selector).html( me.getHTML() );
+        };
+
+        me.reset = function(){
+            $html = $('<div class="place-info">');
         };
 
     };
