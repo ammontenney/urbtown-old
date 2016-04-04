@@ -51,7 +51,7 @@
                     <form>
                         <input type="text" autofocus
                                class="welcome-info-controls-input"
-                               data-bind="value: location">
+                               data-bind="value: location" />
                         <select class="welcome-info-controls-select"
                                 data-bind="foreach: radiusValues, value: locationRadius">
                             <option data-bind="value: $data, text: $data+' miles'"></option>
@@ -71,6 +71,13 @@
                  data-bind="click: ArrowClick">
             <div class="list">
                 <h3 data-bind="text: currentCategoryLabel"></h3>
+                <form>
+                    <input type="text" class="filter-category-text" data-bind="value: newFilter" />
+                    <input type="button" class="filter-category-clear" value="Clear" data-bind="click: ClearFilter"  />
+                    <input type="button" class="filter-category-go" value="Filter" data-bind="click: Filter"  />
+                    <p class="filter-label">Current filter: <span data-bind="text: currentFilter"></span></p>
+                </form>
+
                 <ul data-bind="foreach: currentResults">
                     <li class="has-border" data-bind="text: name+': '+vicinity , click: $parent.ResultItemClick, css: place_id, event: {mouseover: $parent.ResultItemMouseMove}"></li>
                 </ul>

@@ -80,6 +80,8 @@ function AppViewModel() {
     t.locationRadius = ko.observable(0);
     t.currentCategoryLabel = ko.observable('No category has been selected');
     t.currentResults = ko.observableArray();
+    t.newFilter = ko.observable("");
+    t.currentFilter = ko.observable("");
     t.SelectedAPILogo = ko.computed(function(){
         return APILIST[t.selectedAPI()].logo;
     });
@@ -196,6 +198,38 @@ function AppViewModel() {
     t.CloseViewItem = function() {
         $view_item.toggleClass('hide-me', true);
         $list.toggleClass('hide-me', false);
+    };
+
+    t.Filter = function(){
+        // don't do anything if the user didn't enter anything to filter by
+        if (t.newFilter() === "") return;
+
+        // update the label showing the current filter
+        if (t.currentFilter() === ""){
+            t.currentFilter(t.newFilter());
+        }
+        else{
+            t.currentFilter(t.currentFilter()+ ' + ' +t.newFilter());
+        }
+
+        // Save the new filter and then clear it on the display
+        var tmpFilter = t.newFilter();
+        t.newFilter("");
+
+        // filter the category by the given filter
+        var tmpResults = t.currentResults().filter(checkForKeyWord(tmpFilter));
+
+        // update the markers on the map to reflect the filtered results
+        toggleMarkers(false, t.currentResults());
+        t.currentResults(tmpResults);
+        toggleMarkers(true, t.currentResults());
+    };
+
+    t.ClearFilter = function(){
+        t.newFilter("");
+        t.currentFilter("");
+
+        switchCategory(t.currentCategoryLabel());
     };
 
     function centerMap(){
@@ -435,7 +469,7 @@ function AppViewModel() {
 
             searchData = data.searchResult;
 
-            if (searchData.metaProperties.listingCount == 0){
+            if (searchData.metaProperties.listingCount === 0){
                 gen.addEntry('', 'YP.com did not return any results for this location', false);
                 gen.display('.item-content');
                 return;
@@ -467,7 +501,7 @@ function AppViewModel() {
 
             reviewData = data.ratingsAndReviewsResult;
 
-            if (reviewData.metaProperties.reviewCount == 0){
+            if (reviewData.metaProperties.reviewCount === 0){
                 return;
             }
 
@@ -598,6 +632,19 @@ function AppViewModel() {
         itemElem.toggleClass('selected-item', true);
 
         selectedItem = item;
+    }
+
+    function checkForKeyWord(keyWord){
+        return function(element, index){
+            var key = keyWord.toLowerCase();
+            var name = element.name.toLowerCase();
+            var address = element.vicinity.toLowerCase();
+
+            if (name.includes(key) || address.includes(key))
+                return true;
+            else
+                return false;
+        };
     }
 
     if (loadLocalData())
