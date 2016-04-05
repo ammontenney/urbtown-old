@@ -19,17 +19,7 @@ function AppViewModel() {
     var selectedItem = null;
     var SELECTED_MARKER_COLOR = 'green';
     var RADIUS_VALS = [5,10,15,20,25];
-    var CATEGORIES = {
-        Education:  {title:'Education',
-                    icon:'img/education.svg',
-                    color:'#2c5aa0',
-                    api:'',
-                    types:['library', 'school', 'university']},
-        Medical:    {title:'Medical',
-                    icon:'img/medical.svg',
-                    color:'#b80000',
-                    api:'',
-                    types:['dentist', 'doctor', 'health', 'hospital', 'pharmacy', 'physiotherapist']},
+    CATEGORIES = {
         Dining:     {title:'Dining',
                     icon:'img/dining.svg',
                     color:'#440055',
@@ -49,7 +39,17 @@ function AppViewModel() {
                     icon:'img/leisure.svg',
                     color:'#dbb400',
                     api:'',
-                    types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']}
+                    types:['amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'campground', 'movie_rental', 'movie_theater', 'museum', 'park', 'stadium', 'zoo']},
+        Education:  {title:'Education',
+                    icon:'img/education.svg',
+                    color:'#2c5aa0',
+                    api:'',
+                    types:['library', 'school', 'university']},
+        Medical:    {title:'Medical',
+                    icon:'img/medical.svg',
+                    color:'#b80000',
+                    api:'',
+                    types:['dentist', 'doctor', 'health', 'hospital', 'pharmacy', 'physiotherapist']}
     };
     var APILIST = {
         GPlaces: {name:'Google Places',
@@ -193,6 +193,9 @@ function AppViewModel() {
             zoom: 13
         });
         places = new google.maps.places.PlacesService(map);
+
+        // initialize the first category to display to the screen
+        selectInitialCategory();
     };
 
     t.CloseViewItem = function() {
@@ -645,6 +648,16 @@ function AppViewModel() {
             else
                 return false;
         };
+    }
+
+    function selectInitialCategory(){
+        var category = Object.keys(CATEGORIES)[0];
+        t.currentCategoryLabel(category);
+
+        var data = {title: category,
+                    types: CATEGORIES[category].types};
+
+        loadCategory(data);
     }
 
     if (loadLocalData())
